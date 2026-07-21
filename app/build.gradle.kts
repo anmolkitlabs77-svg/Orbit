@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.jetpackcomposearchi"
+    namespace = "com.orbit"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.jetpackcomposearchi"
+        applicationId = "com.orbit"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

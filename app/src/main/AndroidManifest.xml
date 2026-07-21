@@ -14,7 +14,7 @@
 
 
     <application
-        android:name="com.example.jetpackcomposearchi.dashboard.base.App"
+        android:name="com.orbit.dashboard.base.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -51,7 +51,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.jetpackcomposearchi.provider"
+            android:authorities="com.orbit.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
