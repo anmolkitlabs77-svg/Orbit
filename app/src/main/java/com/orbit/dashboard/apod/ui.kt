@@ -34,15 +34,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.orbit.R
 import com.orbit.dashboard.apod.viewModel.picbyDayVM
-import com.orbit.network.room_space.SpaceWorker
 import com.orbit.other.helper
 import kotlinx.coroutines.launch
 

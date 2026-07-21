@@ -13,8 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.orbit.dashboard.base.SharedPref
-import com.orbit.other.Cons
 import kotlinx.coroutines.delay
 
 @Composable

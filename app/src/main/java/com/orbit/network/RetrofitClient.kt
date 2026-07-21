@@ -1,11 +1,8 @@
 package com.orbit.network
 
-import android.util.Log
 import com.google.gson.GsonBuilder
 import com.orbit.dashboard.base.App
-import com.orbit.dashboard.base.SharedPref
 import com.orbit.other.Cons
-import okhttp3.Authenticator
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

@@ -22,8 +22,6 @@ class picbyDayVM @Inject constructor(private val repository: Repository): ViewMo
     @RequiresApi(Build.VERSION_CODES.O)
     val Enddate = LocalDate.now()
     val Startdate =  Enddate.minusDays(6)
-//    val startdate = MutableStateFlow(Startdate.toString())
-//    val enddate = MutableStateFlow(Enddate.toString())
 
     val pictures = repository.getSpaceData()
 
