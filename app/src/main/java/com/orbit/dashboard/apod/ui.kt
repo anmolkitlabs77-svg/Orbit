@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -26,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +40,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.orbit.R
 import com.orbit.dashboard.apod.viewModel.picbyDayVM
+import com.orbit.other.BlurEffect
 import com.orbit.other.helper
 import kotlinx.coroutines.launch
 
@@ -58,6 +61,7 @@ fun Apod(){
         viewModel.callWorker(context)
     }
 
+    Box() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -87,28 +91,28 @@ fun Apod(){
                     contentScale = ContentScale.Crop
                 )
 
-                    Box(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .clip(shape)
-                            .background(colorResource(R.color.black))
-                            .border(
-                                2.dp,
-                                color = colorResource(R.color.app_blue),
-                                shape = shape
-                            )
-                    ) {
-                        Text(
-                            text = helper.format2(selectedPicture?.date ?: helper.currentDate()),
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                                .align(Alignment.TopStart)
-
+                Box(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .clip(shape)
+                        .background(colorResource(R.color.black))
+                        .border(
+                            2.dp,
+                            color = colorResource(R.color.app_blue),
+                            shape = shape
                         )
-                    }
+                ) {
+                    Text(
+                        text = helper.format2(selectedPicture?.date ?: helper.currentDate()),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .align(Alignment.TopStart)
+
+                    )
+                }
                 Text(
                     text = selectedPicture?.title ?: "Saturn at Night",
                     color = Color.White,
@@ -141,7 +145,7 @@ fun Apod(){
             ) {
 
                 Text(
-                    text =  selectedPicture?.explanation ?: exp,
+                    text = selectedPicture?.explanation ?: exp,
                     fontSize = 14.sp,
                     color = colorResource(R.color.text2_blue),
                     modifier = Modifier.padding(10.dp)
@@ -169,7 +173,7 @@ fun Apod(){
                 )
             }
 
-            if(selectedIndex.value >= 0) {
+            if (selectedIndex.value >= 0) {
                 Text(
                     "RECENT IMAGES",
                     color = colorResource(R.color.text_blue),
@@ -182,11 +186,11 @@ fun Apod(){
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp)
             ) {
 
-                items(pictures.size) {it->
+                items(pictures.size) { it ->
                     Column(
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier.padding(end = 10.dp)
-                            .clickable(){
+                            .clickable() {
                                 selectedIndex.value = it
                                 coroutineScope.launch {
                                     scrollState.animateScrollTo(0)
@@ -200,7 +204,9 @@ fun Apod(){
                                 .clip(shape)
                                 .border(
                                     1.dp,
-                                    color = if(selectedIndex.value == it) { colorResource(R.color.text_blue)} else colorResource(R.color.app_blue),
+                                    color = if (selectedIndex.value == it) {
+                                        colorResource(R.color.text_blue)
+                                    } else colorResource(R.color.app_blue),
                                     shape = shape
                                 )
                         )
@@ -226,4 +232,7 @@ fun Apod(){
                 }
             }
         }
+
+        BlurEffect()
+    }
 }

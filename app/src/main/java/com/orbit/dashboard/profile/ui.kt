@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.orbit.R
+import com.orbit.other.BlurEffect
 import com.orbit.other.Colors
 
 @Preview
@@ -56,14 +57,12 @@ fun Profile(){
     val isGuest by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
     val uriHandler = LocalUriHandler.current
-
     val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier.fillMaxSize()
             .background(color = Color.Black)
     ){
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(10.dp)
@@ -365,20 +364,7 @@ fun Profile(){
                 color = colorResource(R.color.text_color2))
 
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(24.dp)
-                .align(Alignment.TopCenter)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            colorResource(R.color.black),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
+        BlurEffect()
     }
 }
 

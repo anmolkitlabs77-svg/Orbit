@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.orbit.R
 import com.orbit.dashboard.events.viewModel.eventsVM
+import com.orbit.other.BlurEffect
 import com.orbit.other.Colors
 
 @Preview
@@ -267,6 +268,7 @@ fun Events(){
                 }
             }
         }
+        BlurEffect()
     }
 }
 

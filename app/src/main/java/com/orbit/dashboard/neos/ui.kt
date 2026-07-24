@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.orbit.R
 import com.orbit.dashboard.neos.viewModel.neosVM
+import com.orbit.other.BlurEffect
 import com.orbit.other.Colors
 import com.orbit.other.ErrorCompose
 
@@ -54,7 +55,6 @@ fun Neos(){
             .fillMaxSize()
             .background(color = Color.Black)
     ) {
-
         LazyColumn(
             modifier = Modifier.padding(10.dp)
         ) {
@@ -247,6 +247,8 @@ fun Neos(){
             }
 
             }
+
+        BlurEffect()
         }
     }
 
