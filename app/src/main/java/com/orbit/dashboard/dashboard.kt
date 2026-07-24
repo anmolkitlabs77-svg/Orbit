@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.orbit.dashboard.apod.Apod
 import com.orbit.dashboard.events.Events
 import com.orbit.dashboard.neos.Neos
+import com.orbit.dashboard.profile.Profile
 import com.orbit.dashboard.weather.Weather
 import com.orbit.other.helper
 import com.orbit.other.rememberPermissionManager
@@ -68,6 +69,12 @@ val items = listOf(
         selectedIcon = R.drawable.weather,
         hasNews = false,
         route = "weather"
+    ),
+    bottomBarItems(
+        title = "Profile",
+        selectedIcon = R.drawable.profile,
+        hasNews = false,
+        route = "profile"
     ),
 )
 
@@ -150,7 +157,6 @@ fun Home() {
                                     )
                             }
                         }
-
                     )
                 }
             }
@@ -171,6 +177,8 @@ fun Home() {
             composable("events") {Events()}
 
             composable("weather") {Weather()}
+
+            composable("profile") { Profile() }
         }
     }
 }
@@ -206,6 +214,13 @@ fun AppTopBar(route: String?){
             topAppBar(
                 title = "Space Weather",
                 subtitle = "$date - CCMC DONKI feed"
+            )
+        }
+
+        "profile" -> {
+            topAppBar(
+                title = "Profile",
+                subtitle = "Manage your account"
             )
         }
     }
