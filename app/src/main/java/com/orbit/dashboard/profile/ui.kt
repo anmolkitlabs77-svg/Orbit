@@ -365,6 +365,20 @@ fun Profile(){
                 color = colorResource(R.color.text_color2))
 
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp)
+                .align(Alignment.TopCenter)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            colorResource(R.color.black),
+                            Color.Transparent
+                        )
+                    )
+                )
+        )
     }
 }
 

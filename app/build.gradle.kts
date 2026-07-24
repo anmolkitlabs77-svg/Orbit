@@ -87,4 +87,6 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.coil.compose)
+    implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
+
 }

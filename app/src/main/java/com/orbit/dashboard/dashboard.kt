@@ -5,6 +5,9 @@ import com.orbit.R
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
@@ -14,8 +17,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,10 +31,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.orbit.dashboard.apod.Apod
 import com.orbit.dashboard.events.Events
 import com.orbit.dashboard.neos.Neos
@@ -79,13 +88,16 @@ val items = listOf(
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, )
 @Composable
 fun Home() {
 
     val navController1 = rememberNavController()
     val navBackStackEntry by navController1.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val useRail = windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
 
 
     val manager = rememberPermissionManager(
@@ -100,85 +112,167 @@ fun Home() {
     }
 
     LaunchedEffect(Unit) {
-
         manager.request()
     }
 
-    Scaffold(
-        topBar = {
-            AppTopBar(currentRoute)
-        },
-        bottomBar = {
-            NavigationBar(
-                containerColor = colorResource(R.color.black),
+    if (useRail) {
+        // Landscape: NavigationRail on the side + content in a Row
+        Scaffold(
+            topBar = {
+                AppTopBar(currentRoute)
+            }
+        ) { innerPadding ->
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                AppNavigationRail(
+                    currentRoute = currentRoute,
+                    navController = navController1,
+                    modifier = Modifier.fillMaxHeight()
+                )
+                NavHost(
+                    navController = navController1,
+                    startDestination = "apod",
+                    modifier = Modifier.weight(1f)
                 ) {
-                items.forEachIndexed { index, item ->
-
-                    NavigationBarItem(
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = colorResource(R.color.white),
-                            selectedTextColor = colorResource(R.color.white)
-
-                        ),
-                        selected = currentRoute == item.route,
-                        onClick = {
-                            navController1.navigate(item.route) {
-                                popUpTo(navController1.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        label = {
-                            Text(
-                                item.title,
-                                color = Color.White,
-                             )
-                        },
-                        alwaysShowLabel = true,
-                        icon = {
-                            BadgedBox(
-                                badge = {
-                                    if (item.badgeCount != null) {
-                                        Badge {
-                                            Text(text = item.badgeCount.toString())
-                                        }
-                                    } else if (item.hasNews) {
-                                        Badge()
-                                    }
-                                }
-                            ){
-                                Icon(
-                                    modifier = Modifier.height(25.dp),
-                                    tint = colorResource(R.color.app_black),
-                                    painter = painterResource(item.selectedIcon),
-                                    contentDescription = ""
-                                    )
-                            }
-                        }
-                    )
+                    composable("apod") { Apod() }
+                    composable("neos") { Neos() }
+                    composable("events") { Events() }
+                    composable("weather") { Weather() }
+                    composable("profile") { Profile() }
                 }
             }
-        },
+        }
+    } else {
+        // Portrait: original NavigationBar at the bottom
+        Scaffold(
+            topBar = {
+                AppTopBar(currentRoute)
+            },
+            bottomBar = {
+                AppNavigationBar(
+                    currentRoute = currentRoute,
+                    navController = navController1
+                )
+            },
+        ) { innerPadding ->
+            NavHost(
+                navController = navController1,
+                startDestination = "apod",
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable("apod") { Apod() }
+                composable("neos") { Neos() }
+                composable("events") { Events() }
+                composable("weather") { Weather() }
+                composable("profile") { Profile() }
+            }
+        }
+    }
+}
 
+@Composable
+fun AppNavigationBar(
+    currentRoute: String?,
+    navController: NavHostController
+) {
+    NavigationBar(
+        containerColor = colorResource(R.color.black),
+    ) {
+        items.forEach { item ->
+            NavigationBarItem(
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(R.color.white),
+                    selectedTextColor = colorResource(R.color.white)
+                ),
+                selected = currentRoute == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                label = {
+                    Text(item.title, color = Color.White)
+                },
+                alwaysShowLabel = true,
+                icon = {
+                    BadgedBox(
+                        badge = {
+                            if (item.badgeCount != null) {
+                                Badge { Text(text = item.badgeCount.toString()) }
+                            } else if (item.hasNews) {
+                                Badge()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.height(25.dp),
+                            tint = colorResource(R.color.app_black),
+                            painter = painterResource(item.selectedIcon),
+                            contentDescription = ""
+                        )
+                    }
+                }
+            )
+        }
+    }
+}
 
-    ) { innerPadding ->
-        NavHost(
-            navController = navController1,
-            startDestination = "apod",
-            modifier = Modifier.padding(innerPadding)
-        ) {
-
-            composable("apod") {Apod()}
-
-            composable("neos") {Neos()}
-
-            composable("events") {Events()}
-
-            composable("weather") {Weather()}
-
-            composable("profile") { Profile() }
+@Composable
+fun AppNavigationRail(
+    currentRoute: String?,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
+    NavigationRail(
+        modifier = modifier,
+        containerColor = colorResource(R.color.black),
+    ) {
+        items.forEach { item ->
+            NavigationRailItem(
+                colors = NavigationRailItemDefaults.colors(
+                    selectedIconColor = colorResource(R.color.white),
+                    selectedTextColor = colorResource(R.color.white)
+                ),
+                selected = currentRoute == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                label = {
+                    Text(item.title, color = Color.White)
+                },
+                alwaysShowLabel = true,
+                icon = {
+                    BadgedBox(
+                        badge = {
+                            if (item.badgeCount != null) {
+                                Badge { Text(text = item.badgeCount.toString()) }
+                            } else if (item.hasNews) {
+                                Badge()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.height(25.dp),
+                            tint = colorResource(R.color.app_black),
+                            painter = painterResource(item.selectedIcon),
+                            contentDescription = ""
+                        )
+                    }
+                }
+            )
         }
     }
 }
