@@ -4,6 +4,9 @@ import com.orbit.dashboard.apod.model.picdayModel
 import com.orbit.dashboard.events.model.Events
 import com.orbit.dashboard.neos.model.neosModel
 import com.orbit.dashboard.weather.model.weather
+import com.orbit.register.model.RegisterRequest
+import com.orbit.register.model.RegisterResponse
+import com.orbit.register.model.RegisterVerifyRequest
 
 import retrofit2.Response
 import retrofit2.http.*
@@ -33,6 +36,15 @@ interface RetrofitApi {
         @Query("api_key") api_key: String
     ) : Response<List<weather>>
 
+    @POST("passkey/register/options")
+    suspend fun register(
+        @Body request: RegisterRequest
+    ) :  RegisterResponse
+
+    @POST("passkey/register/verify")
+    suspend fun registerVirfy(
+        @Body request : RegisterVerifyRequest
+    ) : Response<String>
 }
 
 

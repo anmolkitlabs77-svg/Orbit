@@ -17,6 +17,18 @@ class RetrofitClient {
 
     companion object {
 
+        fun getAuth(): Retrofit {
+            val gson = GsonBuilder()
+                .setLenient()
+                .create()
+
+            return Retrofit.Builder()
+                .baseUrl(Cons.BASE_URL_AUTH)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(getSpace())
+                .build()
+        }
+
         fun getSpaceRetrofit(): Retrofit {
             val gson = GsonBuilder()
                 .setLenient()
@@ -28,7 +40,6 @@ class RetrofitClient {
                 .client(getSpace())
                 .build()
         }
-
         fun getSpaceRetrofit2(): Retrofit {
             val gson = GsonBuilder()
                 .setLenient()
@@ -40,7 +51,6 @@ class RetrofitClient {
                 .client(getSpace())
                 .build()
         }
-
         fun getSpace(): OkHttpClient {
 
             val logging = HttpLoggingInterceptor()

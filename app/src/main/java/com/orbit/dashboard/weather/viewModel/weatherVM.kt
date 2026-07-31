@@ -10,4 +10,5 @@ class weatherVM @Inject constructor(val respository: Repository): ViewModel() {
 
     val weather = respository.getWeather()
 
+
 }
