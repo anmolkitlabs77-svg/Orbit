@@ -9,6 +9,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.orbit.login.model.LoginStartRequest
 import com.orbit.login.model.LoginVerifyRequest
 import com.orbit.login.model.LoginVerifyResponse
@@ -138,7 +139,14 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
 
         try {
             val credentialManager = CredentialManager.create(activity)
-            val requestJsonString = Gson().toJson(response.data?.publicKey)
+            val publicKeyJson = Gson().toJsonTree(response.data?.publicKey).asJsonObject
+            publicKeyJson.add("authenticatorSelection", Gson().toJsonTree(mapOf(
+                "authenticatorAttachment" to "platform",
+                "residentKey" to "required",
+                "requireResidentKey" to true,
+                "userVerification" to "required"
+            )))
+            val requestJsonString = publicKeyJson.toString()
 
             val createRequest = CreatePublicKeyCredentialRequest(
                 requestJson = requestJsonString
