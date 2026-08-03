@@ -4,9 +4,14 @@ import com.orbit.dashboard.apod.model.picdayModel
 import com.orbit.dashboard.events.model.Events
 import com.orbit.dashboard.neos.model.neosModel
 import com.orbit.dashboard.weather.model.weather
+import com.orbit.login.model.LoginResponse
+import com.orbit.login.model.LoginStartRequest
+import com.orbit.login.model.LoginVerifyRequest
+import com.orbit.login.model.LoginVerifyResponse
 import com.orbit.register.model.RegisterRequest
 import com.orbit.register.model.RegisterResponse
 import com.orbit.register.model.RegisterVerifyRequest
+import okhttp3.ResponseBody
 
 import retrofit2.Response
 import retrofit2.http.*
@@ -44,7 +49,18 @@ interface RetrofitApi {
     @POST("passkey/register/verify")
     suspend fun registerVirfy(
         @Body request : RegisterVerifyRequest
-    ) : Response<String>
+    ) : Response<LoginVerifyResponse>
+
+    @POST("passkey/login/start")
+    suspend fun loginStart(
+        @Body request: LoginStartRequest
+    ): Response<LoginResponse>
+
+    @POST("passkey/login/verify")
+    suspend fun loginVerify(
+        @Body request: LoginVerifyRequest
+    ): Response<LoginVerifyResponse>
+
 }
 
 

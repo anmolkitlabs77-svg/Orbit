@@ -2,12 +2,16 @@ package com.orbit.network
 
 import android.app.Activity
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CreatePublicKeyCredentialResponse
 import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetPublicKeyCredentialOption
+import androidx.credentials.PublicKeyCredential
 import com.google.gson.Gson
+import com.orbit.login.model.LoginStartRequest
+import com.orbit.login.model.LoginVerifyRequest
+import com.orbit.login.model.LoginVerifyResponse
 import com.orbit.network.room_space.dao.ApodDao
 import com.orbit.network.room_space.dao.EventDao
 import com.orbit.network.room_space.dao.NeosDao
@@ -23,7 +27,6 @@ import com.orbit.other.helper.toFormattedVelocity
 import com.orbit.register.model.RegisterRequest
 import com.orbit.register.model.RegisterResponse
 import com.orbit.register.model.RegisterVerifyRequest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class Repository @Inject constructor(val spaceDao: ApodDao,
@@ -33,9 +36,6 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     val apiSpace : RetrofitApi = RetrofitClient.getSpaceRetrofit().create(RetrofitApi::class.java)
     val apiSpace2 : RetrofitApi = RetrofitClient.getSpaceRetrofit2().create(RetrofitApi::class.java)
     val apiAuth : RetrofitApi = RetrofitClient.getAuth().create(RetrofitApi::class.java)
-
-
-
     suspend fun syncSpaceData(start_date: String, end_date: String) {
 
         val response = apiSpace.getPicByDay(Cons.spaceToken, start_date, end_date)
@@ -127,12 +127,7 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     }
     fun getWeather() = weatherDao.getAllWeather()
 
-
-
-    suspend fun register(
-        activity: Activity,
-        request: RegisterRequest
-    ): NetworkResult<RegisterResponse> {
+    suspend fun register(activity: Activity, request: RegisterRequest): NetworkResult<LoginVerifyResponse>  {
 
         val response = try {
             NetworkResult.Success(apiAuth.register(request))
@@ -141,7 +136,6 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
             return NetworkResult.Error("Network error: ${e.message}")
         }
 
-        // response is NetworkResult.Success<RegisterResponse> here
         try {
             val credentialManager = CredentialManager.create(activity)
             val requestJsonString = Gson().toJson(response.data?.publicKey)
@@ -152,62 +146,88 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
 
             val credentialResponse = credentialManager.createCredential(
                 context = activity,
-                request = createRequest
-            ) as CreatePublicKeyCredentialResponse
+                request = createRequest) as CreatePublicKeyCredentialResponse
 
-            apiAuth.registerVirfy(
+            val verifyResponse = apiAuth.registerVirfy(
                 RegisterVerifyRequest(
                     email = request.email,
                     credential = credentialResponse.registrationResponseJson
                 )
             )
+            if (!verifyResponse.isSuccessful || verifyResponse.body() == null) {
+                return NetworkResult.Error("Login failed")
+            }
+
+            return NetworkResult.Success(verifyResponse.body()!!)
+
         } catch (e: Exception) {
             e.printStackTrace()
             return NetworkResult.Error("Passkey creation failed: ${e.message}")
         }
-
-        return response
     }
-//    suspend fun register(
-//        activity: Activity,
-//        request: RegisterRequest
-//    ): NetworkResult<RegisterResponse> {
-//
-//        val response = try {
-//            apiAuth.register(request)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            return NetworkResult.Error(e.message ?: "Network error")
-//        }
-//
-//        if (response !is NetworkResult.Success) {
-//            return response
-//        }
-//
-//        try {
-//            val credentialManager = CredentialManager.create(activity)
-//            val requestJsonString = Gson().toJson(response.data!!.publicKey)
-//
-//            val createRequest = CreatePublicKeyCredentialRequest(
-//                requestJson = requestJsonString
-//            )
-//
-//            val credentialResponse = credentialManager.createCredential(
-//                context = activity,
-//                request = createRequest
-//            ) as CreatePublicKeyCredentialResponse
-//
-//            apiAuth.registerVirfy(
-//                RegisterVerifyRequest(
-//                    email = request.email,
-//                    credential = credentialResponse.registrationResponseJson
-//                )
-//            )
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            return NetworkResult.Error(e.message ?: "Passkey creation failed")
-//        }
-//
-//        return response
-//    }
+
+    suspend fun login(
+        activity: Activity,
+        email: String
+    ): NetworkResult<LoginVerifyResponse> {
+
+        val response = try {
+            NetworkResult.Success(
+                apiAuth.loginStart(
+                    LoginStartRequest(email)
+                )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return NetworkResult.Error("Network error: ${e.message}")
+        }
+
+        try {
+
+            val credentialManager =
+                CredentialManager.create(activity)
+
+            val requestJson = Gson().toJson(response.data?.body()?.publicKey)
+
+            val getRequest =
+                GetCredentialRequest(
+                    listOf(
+                        GetPublicKeyCredentialOption(
+                            requestJson
+                        )
+                    )
+                )
+
+            val credentialResult =
+                credentialManager.getCredential(
+                    context = activity,
+                    request = getRequest
+                )
+
+            val publicKeyCredential =
+                credentialResult.credential as PublicKeyCredential
+
+            val verifyResponse =
+                apiAuth.loginVerify(
+                    LoginVerifyRequest(
+                        email = email,
+                        credential = publicKeyCredential.authenticationResponseJson
+                    )
+                )
+            if (!verifyResponse.isSuccessful || verifyResponse.body() == null) {
+                return NetworkResult.Error("Login failed")
+            }
+
+            return NetworkResult.Success(verifyResponse.body()!!)
+
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+
+            return NetworkResult.Error(
+                "Passkey login failed: ${e.message}"
+            )
+        }
+    }
 }

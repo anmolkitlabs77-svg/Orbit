@@ -1,6 +1,7 @@
 package com.orbitwatch.ui.auth
 
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.orbit.login.viewModel.loginVM
+import com.orbit.register.viewModel.registerVM
 import kotlin.random.Random
 
 /* -------------------------------------------------------------------- */
@@ -157,6 +161,9 @@ private fun LoginSectionEyebrow(text: String) {
 fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val activity = LocalActivity.current
+
+    val viewModel : loginVM = hiltViewModel()
 
     Box(
         modifier = Modifier
@@ -254,8 +261,13 @@ fun LoginScreen(navController: NavHostController) {
             LoginGradientButton(
                 text = "Sign In",
                 onClick = {
-                    Log.d("User","$email and $password")
-                          },
+                    activity?.let {
+                        viewModel.login(
+                            it,
+                            email
+                        )
+                    }
+                },
                 enabled = email.isNotBlank() && password.isNotBlank()
             )
 

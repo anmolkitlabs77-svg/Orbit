@@ -1,4 +1,4 @@
-package com.orbit.register.viewModel
+package com.orbit.login.viewModel
 
 import android.app.Activity
 import androidx.lifecycle.LiveData
@@ -8,14 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.orbit.login.model.LoginVerifyResponse
 import com.orbit.network.NetworkResult
 import com.orbit.network.Repository
-import com.orbit.register.model.RegisterRequest
-import com.orbit.register.model.RegisterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
-class registerVM @Inject constructor(val repository: Repository) : ViewModel() {
+class loginVM @Inject constructor(val repository: Repository) : ViewModel() {
 
 
     private val _register =
@@ -24,17 +23,16 @@ class registerVM @Inject constructor(val repository: Repository) : ViewModel() {
     val register: LiveData<NetworkResult<LoginVerifyResponse>>
         get() = _register
 
-    fun register(
+    fun login(
         activity: Activity,
-        request: RegisterRequest
+        email: String
     ) = viewModelScope.launch {
 
         _register.value = NetworkResult.Loading()
 
-        _register.value = repository.register(
-            activity = activity,
-            request = request
-        )
+        _register.value = repository.login(
+            activity,
+            email)
     }
 
 }
