@@ -1,6 +1,7 @@
 package com.orbitwatch.ui.auth
 
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -14,6 +15,8 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.orbit.login.viewModel.loginVM
+import com.orbit.network.NetworkResult
 import com.orbit.register.model.RegisterRequest
 import com.orbit.register.viewModel.registerVM
 import kotlin.random.Random
@@ -176,10 +181,31 @@ fun RegisterScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var showLoader by remember { mutableStateOf(false) }
 
     val activity = LocalActivity.current
-
     val viewModel : registerVM = hiltViewModel()
+    val loginState by viewModel.register.observeAsState()
+
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is NetworkResult.Error<*> -> {
+                showLoader = false
+                Toast.makeText(activity, "Registertion failed. Please try again.", Toast.LENGTH_SHORT).show()
+            }
+            is NetworkResult.Success<*> -> {
+                showLoader = false
+                Toast.makeText(activity, "Registertion successful!", Toast.LENGTH_SHORT).show()
+//                navController.navigate("dashboard") {
+//                    popUpTo("login") { inclusive = true }
+//                }
+            }
+            is NetworkResult.Loading<*> -> {
+                showLoader = true
+            }
+            else -> {}
+        }
+    }
 
 
 
@@ -281,6 +307,13 @@ fun RegisterScreen(navController: NavHostController) {
             }
 
             Spacer(Modifier.height(20.dp))
+
+            if(showLoader){
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    color = Color.White
+                )
+            }
 
             RegisterGradientButton(
                 text = "Create Account",

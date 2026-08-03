@@ -1,6 +1,7 @@
 package com.orbitwatch.ui.auth
 
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,8 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavHostController
 import com.orbit.login.viewModel.loginVM
+import com.orbit.network.NetworkResult
 import com.orbit.register.viewModel.registerVM
 import kotlin.random.Random
 
@@ -159,11 +163,34 @@ private fun LoginSectionEyebrow(text: String) {
 /* -------------------------------------------------------------------- */
 @Composable
 fun LoginScreen(navController: NavHostController) {
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showLoader by remember { mutableStateOf(false) }
     val activity = LocalActivity.current
 
     val viewModel : loginVM = hiltViewModel()
+    val loginState by viewModel.login.observeAsState()
+
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is NetworkResult.Error<*> -> {
+                showLoader = false
+                Toast.makeText(activity, "Login failed. Please try again.", Toast.LENGTH_SHORT).show()
+            }
+            is NetworkResult.Success<*> -> {
+                showLoader = false
+                Toast.makeText(activity, "Login successful!", Toast.LENGTH_SHORT).show()
+//                navController.navigate("dashboard") {
+//                    popUpTo("login") { inclusive = true }
+//                }
+            }
+            is NetworkResult.Loading<*> -> {
+                showLoader = true
+            }
+            else -> {}
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -257,6 +284,13 @@ fun LoginScreen(navController: NavHostController) {
             }
 
             Spacer(Modifier.height(16.dp))
+
+            if(showLoader){
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    color = Color.White
+                )
+            }
 
             LoginGradientButton(
                 text = "Sign In",

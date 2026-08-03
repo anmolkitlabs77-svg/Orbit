@@ -17,20 +17,20 @@ import javax.inject.Inject
 class loginVM @Inject constructor(val repository: Repository) : ViewModel() {
 
 
-    private val _register =
+    private val _login =
         MutableLiveData<NetworkResult<LoginVerifyResponse>>()
 
-    val register: LiveData<NetworkResult<LoginVerifyResponse>>
-        get() = _register
+    val login: LiveData<NetworkResult<LoginVerifyResponse>>
+        get() = _login
 
     fun login(
         activity: Activity,
         email: String
     ) = viewModelScope.launch {
 
-        _register.value = NetworkResult.Loading()
+        _login.value = NetworkResult.Loading()
 
-        _register.value = repository.login(
+        _login.value = repository.login(
             activity,
             email)
     }
