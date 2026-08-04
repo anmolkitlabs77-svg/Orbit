@@ -2,7 +2,6 @@ package com.orbitwatch.ui.auth
 
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -20,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import com.orbit.other.StarsBackground
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -28,119 +28,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
+import com.orbit.R
 import com.orbit.auth.login.viewModel.loginVM
 import com.orbit.network.NetworkResult
-import kotlin.random.Random
-
-/* -------------------------------------------------------------------- */
-/*  Palette — lifted from the Orbit Watch HTML design tokens             */
-/* -------------------------------------------------------------------- */
-private object LoginColors {
-    val Void = Color(0xFF060814)
-    val Line = Color(0xFF1C2440)
-    val Violet = Color(0xFF8B7BFF)
-    val Cyan = Color(0xFF3FE0D0)
-    val Ink = Color(0xFFEEF1FB)
-    val Dim = Color(0xFF5B6690)
-    val MonoDim = Color(0xFF46517A)
-    val FieldBg = Color(0xFF080A15)
-
-    val cyanVioletGradient = Brush.linearGradient(listOf(Cyan, Violet))
-}
-
-@Preview
-@Composable
-private fun LoginStarsBackground(modifier: Modifier = Modifier, starCount: Int = 40) {
-    val stars = remember {
-        List(starCount) {
-            Triple(Random.nextFloat(), Random.nextFloat(), Random.nextFloat() * 0.5f + 0.3f)
-        }
-    }
-    Canvas(modifier = modifier.fillMaxSize()) {
-        stars.forEach { (xPct, yPct, alpha) ->
-            drawCircle(
-                color = Color(0xFFCFD8FF).copy(alpha = alpha),
-                radius = 1.6f,
-                center = Offset(size.width * xPct, size.height * yPct)
-            )
-        }
-    }
-}
-
-@Composable
-private fun LoginTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    leadingIcon: ImageVector,
-    isPassword: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text
-) {
-    var visible by remember { mutableStateOf(false) }
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp)),
-        placeholder = { Text(label, color = LoginColors.Dim, fontSize = 13.sp) },
-        leadingIcon = { Icon(leadingIcon, null, tint = LoginColors.Cyan) },
-        trailingIcon = {
-            if (isPassword) {
-                IconButton(onClick = { visible = !visible }) {
-                    Icon(
-                        if (visible) Icons.Filled.Person else Icons.Filled.Favorite,
-                        contentDescription = null,
-                        tint = LoginColors.Dim
-                    )
-                }
-            }
-        },
-        visualTransformation = if (isPassword && !visible) PasswordVisualTransformation() else VisualTransformation.None,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        singleLine = true,
-        shape = RoundedCornerShape(12.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = LoginColors.FieldBg,
-            unfocusedContainerColor = LoginColors.FieldBg,
-            disabledContainerColor = LoginColors.FieldBg,
-            focusedBorderColor = LoginColors.Cyan,
-            unfocusedBorderColor = LoginColors.Line,
-            focusedTextColor = LoginColors.Ink,
-            unfocusedTextColor = LoginColors.Ink,
-            cursorColor = LoginColors.Cyan
-        )
-    )
-}
-
-@Composable
-private fun LoginGradientButton(text: String, onClick: () -> Unit, enabled: Boolean = true) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(if (enabled) LoginColors.cyanVioletGradient else SolidColor(LoginColors.Line)),
-        contentAlignment = Alignment.Center
-    ) {
-        TextButton(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxSize()) {
-            Text(
-                text,
-                color = if (enabled) LoginColors.Void else LoginColors.Dim,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp
-            )
-        }
-    }
-}
+import com.orbit.other.CommonText
+import com.orbit.other.GradientButton
+import com.orbit.other.TextField
+import com.orbit.other.cyanVioletGradient
 
 @Composable
 private fun LoginSectionEyebrow(text: String) {
@@ -149,16 +50,13 @@ private fun LoginSectionEyebrow(text: String) {
             Modifier
                 .width(12.dp)
                 .height(1.dp)
-                .background(LoginColors.Cyan)
+                .background(colorResource(R.color.cyan))
         )
         Spacer(Modifier.width(8.dp))
-        Text(text.uppercase(), color = LoginColors.MonoDim, fontSize = 10.sp, letterSpacing = 2.5.sp)
+        CommonText(name = text.uppercase(), color = colorResource(R.color.dim), fontSize = 10.sp, letterSpacing = 2.5.sp)
     }
 }
 
-/* -------------------------------------------------------------------- */
-/*  LOGIN SCREEN                                                        */
-/* -------------------------------------------------------------------- */
 @Composable
 fun LoginScreen(navController: NavHostController) {
 
@@ -187,18 +85,13 @@ fun LoginScreen(navController: NavHostController) {
         }
     }
 
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.radialGradient(
-                    colors = listOf(LoginColors.Cyan.copy(alpha = 0.10f), LoginColors.Void),
-                    center = Offset(0.5f, 0.0f)
-                )
-            )
-            .background(LoginColors.Void)
     ) {
-        LoginStarsBackground(modifier = Modifier.fillMaxSize())
+        StarsBackground()
+
 
         Column(
             modifier = Modifier
@@ -208,7 +101,6 @@ fun LoginScreen(navController: NavHostController) {
         ) {
             Spacer(Modifier.height(24.dp))
 
-            // Logo orb — echoes the .sun-core illustration
             Box(
                 modifier = Modifier
                     .size(84.dp)
@@ -218,27 +110,26 @@ fun LoginScreen(navController: NavHostController) {
                             listOf(Color(0xFF2C2960), Color(0xFF12142C), Color(0xFF0A0B1C))
                         )
                     )
-                    .border(1.dp, LoginColors.Line, CircleShape),
+                    .border(1.dp, colorResource(R.color.line), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.Lock, null, tint = LoginColors.Cyan, modifier = Modifier.size(32.dp))
+                Icon(Icons.Filled.Lock, null, tint = colorResource(R.color.cyan), modifier = Modifier.size(32.dp))
             }
 
             Spacer(Modifier.height(24.dp))
 
-            Text(
+            CommonText(
                 "Welcome back",
-                color = LoginColors.Ink,
+                color = colorResource(R.color.ink),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
-            Text(
+            CommonText(
                 "Sign in to keep tracking live solar flares,\nCMEs and geomagnetic storms.",
-                color = LoginColors.Dim,
+                color = colorResource(R.color.dim),
                 fontSize = 13.sp,
-                lineHeight = 20.sp,
                 textAlign = TextAlign.Center
             )
 
@@ -249,7 +140,7 @@ fun LoginScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 LoginSectionEyebrow("Account")
-                LoginTextField(
+                TextField(
                     value = email,
                     onValueChange = { email = it },
                     label = "Email address",
@@ -267,7 +158,7 @@ fun LoginScreen(navController: NavHostController) {
                 )
             }
 
-            LoginGradientButton(
+            GradientButton(
                 text = "Sign In",
                 onClick = {
                     activity?.let {
@@ -280,14 +171,33 @@ fun LoginScreen(navController: NavHostController) {
                 enabled = email.isNotBlank()
             )
 
+            CommonText(name = "Or", color = Color.White, modifier = Modifier.padding(10.dp))
+
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .height(52.dp)
+                    .border(
+                        width = 1.dp,
+                        color = colorResource(R.color.app_blue),
+                        shape = RoundedCornerShape(16.dp),
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                CommonText(
+                    modifier = Modifier.padding(10.dp),
+                    name = "CONTINUE AS GUEST",
+                    fontSize = 14.sp,
+                    color = Color.White,)
+            }
+
             Spacer(Modifier.height(24.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Don't have an account?", color = LoginColors.Dim, fontSize = 12.5.sp)
+                CommonText(name = "Don't have an account?", color = colorResource(R.color.dim), fontSize = 12.5.sp)
                 TextButton(onClick = {
                     navController.navigate("register")
                 }) {
-                    Text("Create one", color = LoginColors.Cyan, fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold)
+                    CommonText(name = "Create one", color = colorResource(R.color.cyan), fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold)
                 }
             }
         }

@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.orbit.SplashScreen
 import com.orbit.dashboard.Home
 import com.orbit.dashboard.webview.WebView
+import com.orbit.onboarding.OnboardingScreen
 import com.orbitwatch.ui.auth.LoginScreen
 import com.orbitwatch.ui.auth.RegisterScreen
 
@@ -20,17 +21,11 @@ fun AppNavigation() {
     NavHost(
         navController = navController,
         startDestination = "splash") {
-        composable("splash") { SplashScreen(navController) }
-        composable("login") {
-//            Login()
-            LoginScreen(navController)
-//            OnboardingScreen(
-//                onFinished = {}
-//            )
-        }
-        composable("mainScreen") { Home() }
-
+        composable("splash") {SplashScreen(navController)}
+        composable("onboarding") {OnboardingScreen(navController)}
+        composable("login") {LoginScreen(navController)}
         composable("register") { RegisterScreen(navController) }
+        composable("mainScreen") {Home()}
         composable(
             route = "webView/{link}") { backStackEntry ->
             val link = backStackEntry.arguments?.getString("link")?.toInt() ?: 1

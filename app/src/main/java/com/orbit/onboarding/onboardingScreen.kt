@@ -1,26 +1,5 @@
 package com.orbit.onboarding
-//
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.tooling.preview.Preview
-//
-//@Preview
-//@Composable
-//fun Onboarding1(){
-//
-//    Box(
-//        modifier = Modifier.fillMaxSize()
-//            .background(color = Color.Black)
-//    ) {
-//
-//
-//    }
-//
-//}
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -30,10 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -46,25 +22,21 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.orbit.R
+import com.orbit.other.CommonText
+import com.orbit.other.GradientButton
+import com.orbit.other.StarsBackground
 import androidx.compose.ui.unit.lerp as lerpDp
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-// ---------------- Design tokens (Orbit Watch theme) ----------------
-private val Void = Color(0xFF060814)
-private val Line = Color(0xFF1C2440)
-private val Violet = Color(0xFF8B7BFF)
-private val Cyan = Color(0xFF3FE0D0)
-private val Ink = Color(0xFFEEF1FB)
-private val Dim = Color(0xFF5B6690)
-
-// ---------------- Page model ----------------
 private data class OnboardingPage(
     val icon: ImageVector,
     val title: String,
@@ -85,9 +57,8 @@ private val onboardingPages = listOf(
 )
 
 
-// ---------------- Screen: 2 pages + dots + single advancing button ----------------
 @Composable
-fun OnboardingScreen(onFinished: () -> Unit) {
+fun OnboardingScreen(navController: NavHostController) {
     val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
     val scope = rememberCoroutineScope()
 
@@ -95,58 +66,54 @@ fun OnboardingScreen(onFinished: () -> Unit) {
         derivedStateOf { pagerState.currentPage == onboardingPages.lastIndex }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Void)
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.weight(1f)
-        ) { page ->
-            OnboardingPageContent(onboardingPages[page])
-        }
-
-        ProgressDotsIndicator(
-            pageCount = onboardingPages.size,
-            pagerState = pagerState,
-            dotColor = Line,
-            selectedDotColor = Cyan,
+        StarsBackground()
+        Column(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 22.dp)
-        )
-
-        // ---- single button: advances pages, becomes "Get Started" on the last one ----
-        Button(
-            onClick = {
-                if (isLastPage) {
-                    onFinished()
-                } else {
-                    scope.launch {
-                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                    }
-                }
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Cyan),
-            shape = RoundedCornerShape(14.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 26.dp)
-                .padding(bottom = 30.dp)
-                .height(52.dp)
+                .navigationBarsPadding()
+                .padding(horizontal = 26.dp, vertical = 40.dp),
         ) {
-            Text(
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.weight(1f)
+            ) { page ->
+                OnboardingPageContent(onboardingPages[page])
+            }
+
+            ProgressDotsIndicator(
+                pageCount = onboardingPages.size,
+                pagerState = pagerState,
+                dotColor = colorResource(R.color.line),
+                selectedDotColor = colorResource(R.color.cyan),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 22.dp)
+            )
+
+            GradientButton(
                 text = if (isLastPage) "Get Started" else "Continue",
-                color = Void,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp
+                onClick = {
+                    if (isLastPage) {
+                        navController.navigate("login") {
+                            popUpTo("splash") {
+                                inclusive = true
+                            }
+                        }
+                    } else {
+                        scope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
+                    }
+                },
+                enabled = true
             )
         }
     }
 }
 
-// ---------------- Single onboarding page content ----------------
 @Composable
 private fun OnboardingPageContent(page: OnboardingPage) {
     Column(
@@ -156,14 +123,12 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // simple gradient icon badge — swap for a custom illustration/SVG if you want
-        // to match the fuller web mockups (sun flare / radar) exactly
         Box(
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape)
                 .background(
-                    Brush.radialGradient(listOf(Violet.copy(alpha = 0.35f), Color.Transparent))
+                    Brush.radialGradient(listOf(colorResource(R.color.violet).copy(alpha = 0.35f), Color.Transparent))
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -179,7 +144,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                 Icon(
                     imageVector = page.icon,
                     contentDescription = null,
-                    tint = Cyan,
+                    tint = colorResource(R.color.cyan),
                     modifier = Modifier.size(38.dp)
                 )
             }
@@ -187,20 +152,19 @@ private fun OnboardingPageContent(page: OnboardingPage) {
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        Text(
-            text = page.title,
-            color = Ink,
+        CommonText(
+            name = page.title,
+            color = colorResource(R.color.ink),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            lineHeight = 30.sp
-        )
+            lineHeight = 30.sp)
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = page.subtitle,
-            color = Dim,
+        CommonText(
+            name = page.subtitle,
+            color = colorResource(R.color.text_color2),
             fontSize = 13.sp,
             textAlign = TextAlign.Center,
             lineHeight = 20.sp
@@ -208,7 +172,6 @@ private fun OnboardingPageContent(page: OnboardingPage) {
     }
 }
 
-// ---------------- Dot indicator (progress mode, same behavior discussed earlier) ----------------
 @Composable
 fun ProgressDotsIndicator(
     pageCount: Int,

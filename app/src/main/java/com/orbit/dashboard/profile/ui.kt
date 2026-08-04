@@ -139,7 +139,7 @@ fun Profile(){
                         .background(
                             brush = Brush.linearGradient(
                                 colors = listOf(
-                                    colorResource(R.color.green),
+                                    colorResource(R.color.cyan),
                                     colorResource(R.color.blue)
                                 )
                             ),
@@ -236,7 +236,7 @@ fun Profile(){
 
                         withStyle(
                             SpanStyle(
-                                color = colorResource(R.color.green),
+                                color = colorResource(R.color.cyan),
                             )
                         ) {
                             append("Get your key here ->")
@@ -345,7 +345,7 @@ fun Profile(){
                         },
                     text = "Privacy Policy",
                     fontSize = 14.sp,
-                    color = colorResource(R.color.green)
+                    color = colorResource(R.color.cyan)
                     )
                 Text(
                     modifier = Modifier.padding(end = 7.dp)
@@ -354,7 +354,7 @@ fun Profile(){
                         },
                     text = "Terms & condition",
                     fontSize = 14.sp,
-                    color = colorResource(R.color.green)
+                    color = colorResource(R.color.cyan)
                 )
             }
             Text(
@@ -378,7 +378,7 @@ fun title(title: String){
         Box(
             modifier = Modifier.width(20.dp)
                 .height(3.dp)
-                .background(color = colorResource(R.color.green))
+                .background(color = colorResource(R.color.cyan))
         ) {
 
         }

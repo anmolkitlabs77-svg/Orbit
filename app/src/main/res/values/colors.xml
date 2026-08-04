@@ -15,7 +15,14 @@
     <color name="text_color">#7A8FB5</color>
     <color name="ice_blue">#38BDF8</color>
     <color name="text_color2">#5B6690</color>
-    <color name="green">#3FE0D0</color>
+    <color name="cyan">#3FE0D0</color>
     <color name="blue">#1976D2</color>
     <color name="red">#F0665F</color>
+    <color name="bg">#060814</color>
+    <color name="line">#1C2440</color>
+    <color name="violet">#8B7BFF</color>
+    <color name="ink">#EEF1FB</color>
+    <color name="dim">#46517A</color>
+    <color name="fieldbg">#080A15</color>
+
 </resources>
