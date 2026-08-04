@@ -1,4 +1,4 @@
-package com.orbit.register.model
+package com.orbit.auth.register.model
 
 data class RegisterRequest(
     val email: String,

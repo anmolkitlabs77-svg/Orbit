@@ -1,15 +1,14 @@
-package com.orbit.register.viewModel
+package com.orbit.auth.register.viewModel
 
 import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.orbit.login.model.LoginVerifyResponse
+import com.orbit.auth.login.model.LoginVerifyResponse
 import com.orbit.network.NetworkResult
 import com.orbit.network.Repository
-import com.orbit.register.model.RegisterRequest
-import com.orbit.register.model.RegisterResponse
+import com.orbit.auth.register.model.RegisterRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

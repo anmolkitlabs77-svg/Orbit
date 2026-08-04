@@ -1,4 +1,4 @@
-package com.orbit.login.model
+package com.orbit.auth.login.model
 
 data class LoginResponse(
     val publicKey: PublicKey,

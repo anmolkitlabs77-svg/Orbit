@@ -1,4 +1,4 @@
-package com.orbit.login
+package com.orbit.auth.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

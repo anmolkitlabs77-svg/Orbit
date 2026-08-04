@@ -9,10 +9,9 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.orbit.login.model.LoginStartRequest
-import com.orbit.login.model.LoginVerifyRequest
-import com.orbit.login.model.LoginVerifyResponse
+import com.orbit.auth.login.model.LoginStartRequest
+import com.orbit.auth.login.model.LoginVerifyRequest
+import com.orbit.auth.login.model.LoginVerifyResponse
 import com.orbit.network.room_space.dao.ApodDao
 import com.orbit.network.room_space.dao.EventDao
 import com.orbit.network.room_space.dao.NeosDao
@@ -25,9 +24,8 @@ import com.orbit.other.Cons
 import com.orbit.other.helper.formatKilometers
 import com.orbit.other.helper.formatMeters
 import com.orbit.other.helper.toFormattedVelocity
-import com.orbit.register.model.RegisterRequest
-import com.orbit.register.model.RegisterResponse
-import com.orbit.register.model.RegisterVerifyRequest
+import com.orbit.auth.register.model.RegisterRequest
+import com.orbit.auth.register.model.RegisterVerifyRequest
 import javax.inject.Inject
 
 class Repository @Inject constructor(val spaceDao: ApodDao,
@@ -71,8 +69,6 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
                         neo.is_sentry_object -> "Sentry"
                         else -> ""
                     }
-
-
                     neosDao.insert(
                         NeosEntity(
                             date = dateTime,
@@ -163,7 +159,7 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
                 )
             )
             if (!verifyResponse.isSuccessful || verifyResponse.body() == null) {
-                return NetworkResult.Error("Login failed")
+                return NetworkResult.Error("Registration failed")
             }
 
             return NetworkResult.Success(verifyResponse.body()!!)

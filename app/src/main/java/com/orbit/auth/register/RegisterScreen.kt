@@ -1,6 +1,5 @@
 package com.orbitwatch.ui.auth
 
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Canvas
@@ -11,7 +10,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,7 +23,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -39,10 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.orbit.login.viewModel.loginVM
 import com.orbit.network.NetworkResult
-import com.orbit.register.model.RegisterRequest
-import com.orbit.register.viewModel.registerVM
+import com.orbit.auth.register.model.RegisterRequest
+import com.orbit.auth.register.viewModel.registerVM
 import kotlin.random.Random
 
 /* -------------------------------------------------------------------- */
@@ -179,26 +175,21 @@ private fun registerGradientTitle() = buildAnnotatedString {
 fun RegisterScreen(navController: NavHostController) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
     var showLoader by remember { mutableStateOf(false) }
 
     val activity = LocalActivity.current
     val viewModel : registerVM = hiltViewModel()
-    val loginState by viewModel.register.observeAsState()
+    val registerState by viewModel.register.observeAsState()
 
-    LaunchedEffect(loginState) {
-        when (loginState) {
+    LaunchedEffect(registerState) {
+        when (registerState) {
             is NetworkResult.Error<*> -> {
                 showLoader = false
-                Toast.makeText(activity, "Registertion failed. Please try again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Registertion failed. Please try again. ${registerState?.message}", Toast.LENGTH_SHORT).show()
             }
             is NetworkResult.Success<*> -> {
                 showLoader = false
                 Toast.makeText(activity, "Registertion successful!", Toast.LENGTH_SHORT).show()
-//                navController.navigate("dashboard") {
-//                    popUpTo("login") { inclusive = true }
-//                }
             }
             is NetworkResult.Loading<*> -> {
                 showLoader = true
@@ -211,7 +202,6 @@ fun RegisterScreen(navController: NavHostController) {
 
 
 
-    val passwordsMatch = password.isNotBlank() && password == confirmPassword
 
     Box(
         modifier = Modifier
@@ -287,23 +277,6 @@ fun RegisterScreen(navController: NavHostController) {
                     leadingIcon = Icons.Filled.Email,
                     keyboardType = KeyboardType.Email
                 )
-                RegisterTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = "Password",
-                    leadingIcon = Icons.Filled.Lock,
-                    isPassword = true
-                )
-                RegisterTextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = "Confirm password",
-                    leadingIcon = Icons.Filled.Lock,
-                    isPassword = true
-                )
-                if (confirmPassword.isNotBlank() && !passwordsMatch) {
-                    Text("Passwords don't match", color = RegisterColors.Danger, fontSize = 11.sp)
-                }
             }
 
             Spacer(Modifier.height(20.dp))
@@ -329,9 +302,8 @@ fun RegisterScreen(navController: NavHostController) {
                         )
                     }
 
-                    Log.d("User","$name and $email and $password")
                 },
-                enabled = name.isNotBlank() && email.isNotBlank() && passwordsMatch
+                enabled = name.isNotBlank() && email.isNotBlank()
             )
 
             Spacer(Modifier.height(14.dp))
