@@ -1,7 +1,5 @@
 package com.orbit.other
 
-
-import android.text.style.LineHeightSpan
 import androidx.compose.foundation.Canvas
 import com.orbit.R
 import androidx.compose.foundation.background
@@ -15,12 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,26 +60,28 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun topAppBar(title: String, subtitle: String){
+fun topAppBar(title: String, subtitle: String, backnavigation: Boolean = false,onClick: (() -> Unit)? = null){
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorResource(R.color.black)),
+        navigationIcon = { if(backnavigation) {
 
-        actions = {
-            Box(
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(colorResource(R.color.black))
+            IconButton(
+                onClick = {
+                    onClick?.invoke()
+                },
+                content = {
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        tint = Color.White,
+                        contentDescription = "back",
+                    )
+                }
             )
-        },
-
+        }},
         title = {
-            Column(
-                modifier = Modifier.padding(start = 10.dp)
-            ) {
+            Column() {
                 Text(title,
                     fontSize = 18.sp,
                     color = Color.White,
@@ -91,16 +90,19 @@ fun topAppBar(title: String, subtitle: String){
                         platformStyle = PlatformTextStyle(
                             includeFontPadding = false))
                     )
-
-                Text(subtitle,
-                    fontSize = 11.sp,
-                    color = colorResource(R.color.text2_blue),
-                    fontFamily =  FontFamily(Font(R.font.inter_regular),),
-                    style = TextStyle(
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ))
+                if(subtitle.isNotEmpty()) {
+                    Text(
+                        subtitle,
+                        fontSize = 11.sp,
+                        color = colorResource(R.color.text2_blue),
+                        fontFamily = FontFamily(Font(R.font.inter_regular),),
+                        style = TextStyle(
+                            platformStyle = PlatformTextStyle(
+                                includeFontPadding = false
+                            )
+                        )
                     )
+                }
             }
         }
         )
@@ -197,7 +199,8 @@ fun CommonText(
     letterSpacing: TextUnit = TextUnit.Unspecified,
     lineHeight: TextUnit = TextUnit.Unspecified,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip,) {
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontFamily: FontFamily? = null,) {
     Text(
         text = name,
         modifier = modifier,

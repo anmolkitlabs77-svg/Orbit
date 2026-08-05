@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.orbit.R
@@ -44,7 +45,7 @@ import com.orbit.other.helper
 import kotlinx.coroutines.launch
 
 @Composable
-fun Apod(){
+fun Apod(navController: NavHostController) {
 
     val context = LocalContext.current
     val viewModel : picbyDayVM = hiltViewModel()

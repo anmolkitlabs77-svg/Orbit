@@ -21,7 +21,6 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +42,7 @@ import com.orbit.dashboard.neos.Neos
 import com.orbit.dashboard.profile.Profile
 import com.orbit.dashboard.weather.Weather
 import com.orbit.other.CommonText
+import com.orbit.other.Cons
 import com.orbit.other.helper
 import com.orbit.other.rememberPermissionManager
 import com.orbit.other.topAppBar
@@ -91,7 +91,7 @@ val items = listOf(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, )
 @Composable
-fun Home() {
+fun Home(navController: NavHostController) {
 
     val navController1 = rememberNavController()
     val navBackStackEntry by navController1.currentBackStackEntryAsState()
@@ -117,7 +117,6 @@ fun Home() {
     }
 
     if (useRail) {
-        // Landscape: NavigationRail on the side + content in a Row
         Scaffold(
             topBar = {
                 AppTopBar(currentRoute)
@@ -138,16 +137,22 @@ fun Home() {
                     startDestination = "apod",
                     modifier = Modifier.weight(1f)
                 ) {
-                    composable("apod") { Apod() }
-                    composable("neos") { Neos() }
-                    composable("events") { Events() }
-                    composable("weather") { Weather() }
-                    composable("profile") { Profile() }
+                    composable(Cons.APOD) { Apod(navController) }
+                    composable(Cons.NEOS) { Neos(navController) }
+                    composable(Cons.EVENTS) { Events(navController) }
+                    composable(Cons.WEATHER) { Weather(navController) }
+                    composable(Cons.PROFILE) { Profile(navController) }
+
+//                    composable("apod") { Apod(navController) }
+//                    composable("neos") { Neos(navController) }
+//                    composable("events") { Events(navController) }
+//                    composable("weather") { Weather(navController) }
+//                    composable("profile") { Profile(navController) }
                 }
             }
         }
     } else {
-        // Portrait: original NavigationBar at the bottom
+        // Portrait : original NavigationBar at the bottom
         Scaffold(
             topBar = {
                 AppTopBar(currentRoute)
@@ -161,14 +166,14 @@ fun Home() {
         ) { innerPadding ->
             NavHost(
                 navController = navController1,
-                startDestination = "apod",
+                startDestination = Cons.APOD,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                composable("apod") { Apod() }
-                composable("neos") { Neos() }
-                composable("events") { Events() }
-                composable("weather") { Weather() }
-                composable("profile") { Profile() }
+                composable(Cons.APOD) { Apod(navController) }
+                composable(Cons.NEOS) { Neos(navController) }
+                composable(Cons.EVENTS) { Events(navController) }
+                composable(Cons.WEATHER) { Weather(navController) }
+                composable(Cons.PROFILE) { Profile(navController) }
             }
         }
     }

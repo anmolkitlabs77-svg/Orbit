@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.orbit.R
 import com.orbit.dashboard.weather.viewModel.weatherVM
 import com.orbit.other.BlurEffect
@@ -40,7 +41,7 @@ import com.orbit.other.ErrorCompose
 
 @Preview
 @Composable
-fun Weather() {
+fun Weather(navController: NavHostController) {
 
     val viewModel : weatherVM = hiltViewModel()
     val weatherData by viewModel.weather.collectAsState(initial = emptyList())

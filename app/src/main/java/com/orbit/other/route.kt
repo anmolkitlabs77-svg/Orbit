@@ -1,5 +1,6 @@
 package com.orbit.other
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -20,16 +21,19 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "splash") {
-        composable("splash") {SplashScreen(navController)}
-        composable("onboarding") {OnboardingScreen(navController)}
-        composable("login") {LoginScreen(navController)}
-        composable("register") { RegisterScreen(navController) }
-        composable("mainScreen") {Home()}
+        startDestination = Cons.SPLASH) {
+        composable(Cons.SPLASH) {SplashScreen(navController)}
+        composable(Cons.ONBOARDING) {OnboardingScreen(navController)}
+        composable(Cons.LOGIN) {LoginScreen(navController)}
+        composable(Cons.REGISTER) { RegisterScreen(navController) }
+        composable(Cons.MAINSCREEN) {Home(navController)}
         composable(
-            route = "webView/{link}") { backStackEntry ->
-            val link = backStackEntry.arguments?.getString("link")?.toInt() ?: 1
-            WebView(navController, link)
+            route = Cons.WEBVIEW) { backStackEntry ->
+
+            val link = Uri.decode(backStackEntry.arguments?.getString("link"))
+            val title = Uri.decode(backStackEntry.arguments?.getString("title"))
+
+            WebView(navController, link, title)
         }
     }
 }

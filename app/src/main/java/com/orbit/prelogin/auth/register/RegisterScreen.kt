@@ -1,8 +1,10 @@
 package com.orbitwatch.ui.auth
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +34,7 @@ import com.orbit.network.NetworkResult
 import com.orbit.prelogin.auth.register.model.RegisterRequest
 import com.orbit.prelogin.auth.register.viewModel.registerVM
 import com.orbit.other.CommonText
+import com.orbit.other.Cons
 import com.orbit.other.GradientButton
 import com.orbit.other.StarsBackground
 import com.orbit.other.TextField
@@ -169,7 +172,16 @@ fun RegisterScreen(navController: NavHostController) {
             Spacer(Modifier.height(14.dp))
 
             CommonText(
-                "By continuing you agree to Orbit Watch's Privacy Policy and Terms of Service.",
+                modifier = Modifier.clickable{
+
+                    val link = Cons.NASA_GOV
+                    val title = "Nasa Api"
+
+                    navController.navigate(
+                        "webView/${Uri.encode(link)}/${Uri.encode(title)}"
+                    )
+                },
+                name = "By continuing you agree to Orbit Watch's Privacy Policy and Terms of Service.",
                 color = colorResource(R.color.dim),
                 fontSize = 10.5.sp,
                 lineHeight = 16.sp,

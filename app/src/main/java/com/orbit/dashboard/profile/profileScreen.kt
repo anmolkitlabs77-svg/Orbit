@@ -31,16 +31,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.orbit.R
 import com.orbit.other.BlurEffect
@@ -49,13 +48,12 @@ import com.orbit.other.GradientButton
 import com.orbit.other.StarsBackground
 import com.orbit.other.fieldText
 
-@Preview
 @Composable
-fun Profile(){
+fun Profile(navController: NavHostController) {
 
     val isGuest by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
-    val uriHandler = LocalUriHandler.current
+//    val uriHandler = LocalUriHandler.current
     val scrollState = rememberScrollState()
 
     Box(
@@ -238,7 +236,7 @@ fun Profile(){
                             start = offset,
                             end = offset
                         ).firstOrNull()?.let {
-                            uriHandler.openUri(it.item)
+//                            uriHandler.openUri(it.item)
                         }
                     }
                     )
@@ -328,7 +326,9 @@ fun Profile(){
                 CommonText(
                     modifier = Modifier.padding(end = 7.dp)
                         .clickable{
-                            uriHandler.openUri("https://google.com")
+                            navController.navigate("webView")
+
+//                            uriHandler.openUri("https://google.com")
                         },
                     name = "Privacy Policy",
                     fontSize = 13.sp,
@@ -337,7 +337,7 @@ fun Profile(){
                 CommonText(
                     modifier = Modifier.padding(end = 7.dp)
                         .clickable{
-                            uriHandler.openUri("https://google.com")
+//                            uriHandler.openUri("https://google.com")
                         },
                     name = "Terms & condition",
                     fontSize = 13.sp,
