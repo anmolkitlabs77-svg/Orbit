@@ -35,7 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.orbit.R
 import com.orbit.dashboard.weather.viewModel.weatherVM
 import com.orbit.other.BlurEffect
-import com.orbit.other.Colors
+import com.orbit.other.CommonText
 import com.orbit.other.ErrorCompose
 
 @Preview
@@ -98,7 +98,7 @@ fun Weather() {
                                         .background(Color.Yellow)
                                 )
                                 Text(
-                                    " 14 CMEs",
+                                    text = " 14 CMEs",
                                     maxLines = 1,
                                     fontSize = 14.sp,
                                     color = colorResource(R.color.text2_blue)
@@ -176,7 +176,7 @@ fun Weather() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(14.dp))
-                                .background(Colors.CardBg)
+                                .background(colorResource(R.color.cardbg))
                         ) {
                             // Left color stripe
                             Box(
@@ -204,7 +204,7 @@ fun Weather() {
                                 ) {
                                     Text(
                                         text = weatherData[it].messageId,
-                                        color = Colors.TitleColor,
+                                        color = colorResource(R.color.title),
                                         fontSize = 19.sp,
                                         fontWeight = FontWeight.Medium,
                                         modifier = Modifier.weight(1f)
@@ -228,9 +228,9 @@ fun Weather() {
                             Spacer(modifier = Modifier.height(14.dp))
 
                             // Description
-                            Text(
-                                text = " it.description",
-                                color = Colors.BodyColor,
+                            CommonText(
+                                name = " it.description",
+                                color = colorResource(R.color.body),
                                 fontSize = 14.sp,
                                 lineHeight = 20.sp,
                                 maxLines = 2,
@@ -242,9 +242,8 @@ fun Weather() {
                             // Footer
                             Text(
                                 text = "it.footer",
-                                color = Colors.FooterColor,
-                                fontSize = 13.sp
-                            )
+                                color = colorResource(R.color.footer),
+                                fontSize = 13.sp)
                         }
                     }
                 }
@@ -265,9 +264,9 @@ fun Weather() {
 @Composable
 private fun StatColumn(label: String, value: String) {
     Column {
-        Text(text = label, color = Colors.LabelColor, fontSize = 13.sp)
+        Text(text = label, color = colorResource(R.color.subtitle), fontSize = 13.sp)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = value, color = Colors.ValueColor, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        Text(text = value, color = colorResource(R.color.value), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 

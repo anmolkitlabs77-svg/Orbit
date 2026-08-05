@@ -88,10 +88,9 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.coil.compose)
     implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
-
     implementation("androidx.credentials:credentials:1.5.0")
-
     implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
 }

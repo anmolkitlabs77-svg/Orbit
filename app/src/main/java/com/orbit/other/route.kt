@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.orbit.SplashScreen
 import com.orbit.dashboard.Home
 import com.orbit.dashboard.webview.WebView
-import com.orbit.onboarding.OnboardingScreen
+import com.orbit.prelogin.onboarding.OnboardingScreen
 import com.orbitwatch.ui.auth.LoginScreen
 import com.orbitwatch.ui.auth.RegisterScreen
 

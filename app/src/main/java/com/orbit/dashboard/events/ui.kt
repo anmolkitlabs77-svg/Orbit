@@ -31,7 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.orbit.R
 import com.orbit.dashboard.events.viewModel.eventsVM
 import com.orbit.other.BlurEffect
-import com.orbit.other.Colors
 
 @Preview
 @Composable
@@ -169,7 +168,7 @@ fun Events(){
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Colors.CardBg)
+                            .background(colorResource(R.color.cardbg))
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -179,9 +178,9 @@ fun Events(){
                                 .size(56.dp)
                                 .clip(RoundedCornerShape(14.dp))
                                 .background(
-                                    Brush.verticalGradient(listOf(Colors.ThumbGradientStart, Colors.ThumbGradientEnd))
+                                    Brush.verticalGradient(listOf(colorResource(R.color.thumborder), colorResource(R.color.thumb2)))
                                 )
-                                .border(1.dp, Colors.ThumbBorder.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
+                                .border(1.dp, colorResource(R.color.thumborder).copy(alpha = 0.5f), RoundedCornerShape(14.dp))
                         )
 
                         Spacer(modifier = Modifier.width(14.dp))
@@ -190,14 +189,14 @@ fun Events(){
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = events[it].id,
-                                color = Colors.TitleColor,
+                                color = colorResource(R.color.title),
                                 fontSize = 17.sp,
                                 maxLines = 1
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "storm.longitude · storm.latitude · storm.date}",
-                                color = Colors.SubtitleColor,
+                                color = colorResource(R.color.subtitle),
                                 fontSize = 13.sp,
                                 maxLines = 1
                             )
@@ -227,7 +226,7 @@ fun Events(){
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Colors.CardBg)
+                            .background(colorResource(R.color.cardbg))
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -237,9 +236,9 @@ fun Events(){
                                 .size(56.dp)
                                 .clip(RoundedCornerShape(14.dp))
                                 .background(
-                                    Brush.verticalGradient(listOf(Colors.ThumbGradientStart, Colors.ThumbGradientEnd))
+                                    Brush.verticalGradient(listOf(colorResource(R.color.thumb1), colorResource(R.color.thumb2)))
                                 )
-                                .border(1.dp, Colors.ThumbBorder.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
+                                .border(1.dp, colorResource(R.color.thumborder).copy(alpha = 0.5f), RoundedCornerShape(14.dp))
                         )
 
                         Spacer(modifier = Modifier.width(14.dp))
@@ -248,14 +247,14 @@ fun Events(){
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = events[it].id,
-                                color = Colors.TitleColor,
+                                color = colorResource(R.color.title),
                                 fontSize = 17.sp,
                                 maxLines = 1
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "storm.longitude · storm.latitude · storm.date}",
-                                color = Colors.SubtitleColor,
+                                color = colorResource(R.color.subtitle),
                                 fontSize = 13.sp,
                                 maxLines = 1
                             )
@@ -275,7 +274,7 @@ fun Events(){
 
 @Composable
 private fun StatusBadge() {
-    BadgePill("Active", Colors.ActiveBadgeBg, Colors.ActiveBadgeBorder, Colors.ActiveBadgeText)}
+    BadgePill("Active", colorResource(R.color.activebadge), colorResource(R.color.activebadgeborder), colorResource(R.color.activebadgetext))}
 @Composable
 private fun BadgePill(text: String, bg: Color, border: Color, textColor: Color) {
     Box(

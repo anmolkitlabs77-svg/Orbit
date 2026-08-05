@@ -42,6 +42,7 @@ import com.orbit.dashboard.events.Events
 import com.orbit.dashboard.neos.Neos
 import com.orbit.dashboard.profile.Profile
 import com.orbit.dashboard.weather.Weather
+import com.orbit.other.CommonText
 import com.orbit.other.helper
 import com.orbit.other.rememberPermissionManager
 import com.orbit.other.topAppBar
@@ -198,14 +199,14 @@ fun AppNavigationBar(
                     }
                 },
                 label = {
-                    Text(item.title, color = Color.White)
+                    CommonText(name = item.title, color = Color.White)
                 },
                 alwaysShowLabel = true,
                 icon = {
                     BadgedBox(
                         badge = {
                             if (item.badgeCount != null) {
-                                Badge { Text(text = item.badgeCount.toString()) }
+                                Badge { CommonText(name = item.badgeCount.toString()) }
                             } else if (item.hasNews) {
                                 Badge()
                             }
@@ -251,14 +252,14 @@ fun AppNavigationRail(
                     }
                 },
                 label = {
-                    Text(item.title, color = Color.White)
+                    CommonText(item.title, color = Color.White)
                 },
                 alwaysShowLabel = true,
                 icon = {
                     BadgedBox(
                         badge = {
                             if (item.badgeCount != null) {
-                                Badge { Text(text = item.badgeCount.toString()) }
+                                Badge { CommonText(name = item.badgeCount.toString()) }
                             } else if (item.hasNews) {
                                 Badge()
                             }

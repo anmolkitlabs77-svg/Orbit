@@ -5,57 +5,38 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import com.orbit.other.StarsBackground
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import com.orbit.R
-import com.orbit.auth.login.viewModel.loginVM
+import com.orbit.prelogin.auth.login.viewModel.loginVM
 import com.orbit.network.NetworkResult
 import com.orbit.other.CommonText
 import com.orbit.other.GradientButton
 import com.orbit.other.TextField
-import com.orbit.other.cyanVioletGradient
+import com.orbit.other.fieldText
 
-@Composable
-private fun LoginSectionEyebrow(text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            Modifier
-                .width(12.dp)
-                .height(1.dp)
-                .background(colorResource(R.color.cyan))
-        )
-        Spacer(Modifier.width(8.dp))
-        CommonText(name = text.uppercase(), color = colorResource(R.color.dim), fontSize = 10.sp, letterSpacing = 2.5.sp)
-    }
-}
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -63,6 +44,8 @@ fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var showLoader by remember { mutableStateOf(false) }
     val activity = LocalActivity.current
+    val scrollState = rememberScrollState()
+
 
     val viewModel : loginVM = hiltViewModel()
     val loginState by viewModel.login.observeAsState()
@@ -96,6 +79,7 @@ fun LoginScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .padding(horizontal = 26.dp, vertical = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -139,7 +123,7 @@ fun LoginScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                LoginSectionEyebrow("Account")
+                fieldText("Account")
                 TextField(
                     value = email,
                     onValueChange = { email = it },
@@ -161,12 +145,13 @@ fun LoginScreen(navController: NavHostController) {
             GradientButton(
                 text = "Sign In",
                 onClick = {
-                    activity?.let {
-                        viewModel.login(
-                            it,
-                            email
-                        )
-                    }
+                    navController.navigate("mainScreen")
+//                    activity?.let {
+//                        viewModel.login(
+//                            it,
+//                            email
+//                        )
+//                    }
                 },
                 enabled = email.isNotBlank()
             )

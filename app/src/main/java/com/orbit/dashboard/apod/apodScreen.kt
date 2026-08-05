@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -27,7 +26,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +39,7 @@ import coil.request.ImageRequest
 import com.orbit.R
 import com.orbit.dashboard.apod.viewModel.picbyDayVM
 import com.orbit.other.BlurEffect
+import com.orbit.other.StarsBackground
 import com.orbit.other.helper
 import kotlinx.coroutines.launch
 
@@ -61,12 +60,17 @@ fun Apod(){
         viewModel.callWorker(context)
     }
 
-    Box() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(R.color.black))
+
+    ) {
+        StarsBackground()
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .verticalScroll(scrollState,)
-                .background(colorResource(R.color.black))
+
         ) {
             val shape = RoundedCornerShape(18.dp)
             Box(

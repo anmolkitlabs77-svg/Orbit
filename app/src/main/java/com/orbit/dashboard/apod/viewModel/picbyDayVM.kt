@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class picbyDayVM @Inject constructor(private val repository: Repository): ViewModel(){
 
-
+    
     @RequiresApi(Build.VERSION_CODES.O)
     val Enddate = LocalDate.now()
     val Startdate =  Enddate.minusDays(6)

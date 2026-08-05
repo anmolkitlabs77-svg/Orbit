@@ -4,13 +4,13 @@ import com.orbit.dashboard.apod.model.picdayModel
 import com.orbit.dashboard.events.model.Events
 import com.orbit.dashboard.neos.model.neosModel
 import com.orbit.dashboard.weather.model.weather
-import com.orbit.auth.login.model.LoginResponse
-import com.orbit.auth.login.model.LoginStartRequest
-import com.orbit.auth.login.model.LoginVerifyRequest
-import com.orbit.auth.login.model.LoginVerifyResponse
-import com.orbit.auth.register.model.RegisterRequest
-import com.orbit.auth.register.model.RegisterResponse
-import com.orbit.auth.register.model.RegisterVerifyRequest
+import com.orbit.prelogin.auth.login.model.LoginResponse
+import com.orbit.prelogin.auth.login.model.LoginStartRequest
+import com.orbit.prelogin.auth.login.model.LoginVerifyRequest
+import com.orbit.prelogin.auth.login.model.LoginVerifyResponse
+import com.orbit.prelogin.auth.register.model.RegisterRequest
+import com.orbit.prelogin.auth.register.model.RegisterResponse
+import com.orbit.prelogin.auth.register.model.RegisterVerifyRequest
 
 import retrofit2.Response
 import retrofit2.http.*

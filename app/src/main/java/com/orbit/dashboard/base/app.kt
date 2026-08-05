@@ -1,7 +1,11 @@
 package com.orbit.dashboard.base
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
@@ -26,6 +30,8 @@ class App : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+
 
         // Manual initialization is required when default initializer is removed.
         // We use a try-catch to avoid crashing if it's somehow initialized twice.

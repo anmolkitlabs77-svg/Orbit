@@ -24,5 +24,22 @@
     <color name="ink">#EEF1FB</color>
     <color name="dim">#46517A</color>
     <color name="fieldbg">#080A15</color>
+    <color name="title">#F5F6FA</color>
+    <color name="subtitle">#8B93A7</color>
+    <color name="activebadge">#2A2712</color>
+    <color name="activebadgeborder">#B8A23A</color>
+    <color name="activebadgetext">#E0C84A</color>
+    <color name="thumb1">#3A2418</color>
+    <color name="thumb2">#1E140F</color>
+    <color name="thumborder">#D97B3D</color>
+    <color name="cardbg">#121826</color>
+    <color name="value">#ECEEF3</color>
+    <color name="body">#9AA3B5</color>
+    <color name="footer">#6B7280</color>
+    <color name="hazard">#3A1620</color>
+    <color name="hazardtext">#F87171</color>
+    <color name="sentry">#3A2A10</color>
+    <color name="sentrytext">#FBBF24</color>
+
 
 </resources>

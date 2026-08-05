@@ -1,4 +1,4 @@
-package com.orbit.auth.register.model
+package com.orbit.prelogin.auth.register.model
 
 data class RegisterVerifyRequest(
     val email: String,

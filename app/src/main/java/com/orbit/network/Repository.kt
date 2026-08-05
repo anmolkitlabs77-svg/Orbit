@@ -9,9 +9,9 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
 import com.google.gson.Gson
-import com.orbit.auth.login.model.LoginStartRequest
-import com.orbit.auth.login.model.LoginVerifyRequest
-import com.orbit.auth.login.model.LoginVerifyResponse
+import com.orbit.prelogin.auth.login.model.LoginStartRequest
+import com.orbit.prelogin.auth.login.model.LoginVerifyRequest
+import com.orbit.prelogin.auth.login.model.LoginVerifyResponse
 import com.orbit.network.room_space.dao.ApodDao
 import com.orbit.network.room_space.dao.EventDao
 import com.orbit.network.room_space.dao.NeosDao
@@ -24,8 +24,8 @@ import com.orbit.other.Cons
 import com.orbit.other.helper.formatKilometers
 import com.orbit.other.helper.formatMeters
 import com.orbit.other.helper.toFormattedVelocity
-import com.orbit.auth.register.model.RegisterRequest
-import com.orbit.auth.register.model.RegisterVerifyRequest
+import com.orbit.prelogin.auth.register.model.RegisterRequest
+import com.orbit.prelogin.auth.register.model.RegisterVerifyRequest
 import javax.inject.Inject
 
 class Repository @Inject constructor(val spaceDao: ApodDao,

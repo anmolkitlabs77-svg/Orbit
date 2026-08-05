@@ -9,11 +9,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -52,9 +55,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnit.Companion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.random.Random
@@ -193,7 +195,9 @@ fun CommonText(
     fontSize: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight = FontWeight.Normal,
     letterSpacing: TextUnit = TextUnit.Unspecified,
-    lineHeight: TextUnit = TextUnit.Unspecified,) {
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip,) {
     Text(
         text = name,
         modifier = modifier,
@@ -202,7 +206,9 @@ fun CommonText(
         fontSize = fontSize,
         fontWeight = fontWeight,
         letterSpacing = letterSpacing,
-        lineHeight = lineHeight
+        lineHeight = lineHeight,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
@@ -229,7 +235,7 @@ fun GradientButton( text: String, onClick: () -> Unit, enabled: Boolean = true) 
         TextButton(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxSize()) {
             CommonText(
                 name = text,
-                color = if (enabled) colorResource(R.color.bg) else colorResource(R.color.text_color2),
+                color = if (enabled) colorResource(R.color.white) else colorResource(R.color.text_color2),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp
             )
@@ -282,5 +288,21 @@ fun TextField(
             cursorColor = colorResource(R.color.cyan)
         )
     )
+}
+
+@Composable
+fun fieldText(text: String, modifer: Modifier = Modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+        modifier = modifer
+        ) {
+        Box(
+            Modifier
+                .width(12.dp)
+                .height(1.dp)
+                .background(colorResource(R.color.cyan))
+        )
+        Spacer(Modifier.width(8.dp))
+        CommonText(name = text.uppercase(), color = colorResource(R.color.dim), fontSize = 10.sp, letterSpacing = 2.5.sp)
+    }
 }
 

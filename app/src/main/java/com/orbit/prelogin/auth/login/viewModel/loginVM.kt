@@ -1,11 +1,11 @@
-package com.orbit.auth.login.viewModel
+package com.orbit.prelogin.auth.login.viewModel
 
 import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.orbit.auth.login.model.LoginVerifyResponse
+import com.orbit.prelogin.auth.login.model.LoginVerifyResponse
 import com.orbit.network.NetworkResult
 import com.orbit.network.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel

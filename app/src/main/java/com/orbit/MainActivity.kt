@@ -1,6 +1,7 @@
 package com.orbit
 
 import android.app.Activity
+import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
@@ -22,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.orbit.other.AppNavigation
 import com.orbit.other.NetworkChange
 import com.orbit.other.SystemBars
@@ -46,6 +50,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             JetpackComposeArchiTheme {
                 SystemBars()
