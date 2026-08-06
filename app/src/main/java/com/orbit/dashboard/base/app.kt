@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.orbit.other.SharedPref
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -17,8 +18,10 @@ class App : Application(), Configuration.Provider {
     
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
-    
+
     companion object {
+        lateinit var sharedPref: SharedPref
+
         lateinit var instance: App
 
         @JvmStatic
@@ -30,6 +33,7 @@ class App : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        sharedPref = SharedPref(this)
 
 
 

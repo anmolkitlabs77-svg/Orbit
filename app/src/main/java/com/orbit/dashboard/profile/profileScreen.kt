@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,8 +43,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.orbit.R
+import com.orbit.dashboard.base.App
 import com.orbit.other.BlurEffect
 import com.orbit.other.CommonText
+import com.orbit.other.Cons
 import com.orbit.other.GradientButton
 import com.orbit.other.StarsBackground
 import com.orbit.other.fieldText
@@ -51,9 +54,10 @@ import com.orbit.other.fieldText
 @Composable
 fun Profile(navController: NavHostController) {
 
-    val isGuest by remember { mutableStateOf(false) }
+    var isGuest by rememberSaveable {mutableStateOf(App.sharedPref.getBoolean(Cons.IS_GUEST, false)) }
+
     var text by remember { mutableStateOf("") }
-//    val uriHandler = LocalUriHandler.current
+
     val scrollState = rememberScrollState()
 
     Box(
@@ -116,12 +120,12 @@ fun Profile(navController: NavHostController) {
                         shape = RoundedCornerShape(50)
                     )
                 ) {
-                    CommonText(
+                CommonText(
                         modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp),
                         name = "GUEST MODE",
                         color = colorResource(R.color.text2_blue),
                         fontSize = 14.sp
-                        )
+                )
                 }
                 CommonText(
                     name = "Exploring as Guest",
@@ -134,7 +138,11 @@ fun Profile(navController: NavHostController) {
                 GradientButton(
                     text = "Register with Orbit",
                     onClick = {
-
+                        navController.navigate(Cons.REGISTER){
+                            popUpTo(Cons.MAINSCREEN){
+                                inclusive = true
+                            }
+                        }
                     },
                     enabled = true
                 )
@@ -294,6 +302,15 @@ fun Profile(navController: NavHostController) {
             if(!isGuest) {
                 Box(
                     modifier = Modifier
+                        .clickable{
+                            App.sharedPref.clearAll()
+                            App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE,true)
+                            navController.navigate(Cons.LOGIN){
+                                popUpTo(Cons.MAINSCREEN){
+                                    inclusive = true
+                                }
+                            }
+                        }
                         .padding(10.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))

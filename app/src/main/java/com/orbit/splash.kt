@@ -12,7 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.orbit.dashboard.base.App
 import com.orbit.other.CommonText
+import com.orbit.other.Cons
 import com.orbit.other.StarsBackground
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -23,11 +25,30 @@ fun SplashScreen(navController: NavController){
     LaunchedEffect(Unit) {
         delay(2000.milliseconds)
 
-        navController.navigate("onboarding"){
+        if(App.sharedPref.getBoolean(Cons.IS_USER_LOGGEDIN,false)){
+
+            navController.navigate(Cons.MAINSCREEN){
                 popUpTo("splash"){
                     inclusive = true
                 }
             }
+        }
+        else if(App.sharedPref.getBoolean(Cons.IS_ONBOARDING_COMPLETE,false)){
+
+            navController.navigate(Cons.LOGIN){
+                popUpTo("splash"){
+                    inclusive = true
+                }
+            }
+        }
+        else {
+            navController.navigate(Cons.ONBOARDING){
+                popUpTo("splash"){
+                    inclusive = true
+                }
+            }
+        }
+
     }
     Box(
         contentAlignment = Alignment.Center,

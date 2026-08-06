@@ -27,6 +27,12 @@ class Cons {
         const val WEATHER = "weather"
         const val PROFILE = "profile"
 
+        const val IS_ONBOARDING_COMPLETE = "is_onboarding_complete"
+        const val IS_USER_LOGGEDIN = "is_logged_in"
+        const val IS_GUEST = "is_guest"
+        const val NAME = "name"
+        const val EMAIL = "email"
+
 
 
     }

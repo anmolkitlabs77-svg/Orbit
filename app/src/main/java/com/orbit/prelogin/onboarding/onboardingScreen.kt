@@ -1,6 +1,5 @@
 package com.orbit.prelogin.onboarding
 
-import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.orbit.R
+import com.orbit.dashboard.base.App
 import com.orbit.other.CommonText
 import com.orbit.other.Cons
 import com.orbit.other.GradientButton
@@ -87,6 +87,7 @@ fun OnboardingScreen(navController: NavHostController) {
                 ) {
                     CommonText(
                         modifier = Modifier.clickable{
+                            App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE,true)
                             navController.navigate(Cons.LOGIN) {
                                 popUpTo(Cons.ONBOARDING) {
                                     inclusive = true
@@ -120,6 +121,8 @@ fun OnboardingScreen(navController: NavHostController) {
                 text = if (isLastPage) "Get Started" else "Continue",
                 onClick = {
                     if (isLastPage) {
+                        App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE,true)
+
                         navController.navigate(Cons.LOGIN) {
                             popUpTo(Cons.ONBOARDING) {
                                 inclusive = true

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.orbit.dashboard.base.App
 import com.orbit.network.NetworkResult
 import com.orbit.prelogin.auth.register.model.RegisterRequest
 import com.orbit.prelogin.auth.register.viewModel.registerVM
@@ -66,6 +67,9 @@ fun RegisterScreen(navController: NavHostController) {
         when (registerState) {
             is NetworkResult.Error<*> -> {
                 showLoader = false
+                App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
+                App.sharedPref.putBoolean(Cons.IS_GUEST,false)
+
                 Toast.makeText(activity, "Registration failed. Please try again. ${registerState?.message}", Toast.LENGTH_SHORT).show()
                 navController.navigate(Cons.MAINSCREEN){
                     popUpTo(Cons.LOGIN){
@@ -166,7 +170,6 @@ fun RegisterScreen(navController: NavHostController) {
                             )
                         )
                     }
-
                 },
                 enabled = name.isNotBlank() && email.isNotBlank()
             )
