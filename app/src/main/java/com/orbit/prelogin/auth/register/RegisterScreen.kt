@@ -95,6 +95,7 @@ fun RegisterScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier
+            .safeDrawingPadding()
             .fillMaxSize()
 
     ) {

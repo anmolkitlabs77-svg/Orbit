@@ -79,6 +79,7 @@ fun LoginScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier
+            .safeDrawingPadding()
             .fillMaxSize()
     ) {
         StarsBackground()

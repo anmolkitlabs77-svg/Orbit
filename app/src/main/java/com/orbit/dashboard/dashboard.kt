@@ -142,12 +142,6 @@ fun Home(navController: NavHostController) {
                     composable(Cons.EVENTS) { Events(navController) }
                     composable(Cons.WEATHER) { Weather(navController) }
                     composable(Cons.PROFILE) { Profile(navController) }
-
-//                    composable("apod") { Apod(navController) }
-//                    composable("neos") { Neos(navController) }
-//                    composable("events") { Events(navController) }
-//                    composable("weather") { Weather(navController) }
-//                    composable("profile") { Profile(navController) }
                 }
             }
         }

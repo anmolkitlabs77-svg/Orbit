@@ -1,5 +1,6 @@
 package com.orbit.dashboard.profile
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -244,7 +245,14 @@ fun Profile(navController: NavHostController) {
                             start = offset,
                             end = offset
                         ).firstOrNull()?.let {
-//                            uriHandler.openUri(it.item)
+
+                            val link = Cons.NASA_GOV
+                            val title = "Nasa Api"
+
+                            navController.navigate(
+                                "webView/${Uri.encode(link)}/${Uri.encode(title)}"
+                            )
+
                         }
                     }
                     )
@@ -343,9 +351,12 @@ fun Profile(navController: NavHostController) {
                 CommonText(
                     modifier = Modifier.padding(end = 7.dp)
                         .clickable{
-                            navController.navigate("webView")
+                            val link = Cons.PRIVACY_POLICY_URL
+                            val title = "Privacy Policy"
 
-//                            uriHandler.openUri("https://google.com")
+                            navController.navigate(
+                                "webView/${Uri.encode(link)}/${Uri.encode(title)}"
+                            )
                         },
                     name = "Privacy Policy",
                     fontSize = 13.sp,
@@ -354,7 +365,8 @@ fun Profile(navController: NavHostController) {
                 CommonText(
                     modifier = Modifier.padding(end = 7.dp)
                         .clickable{
-//                            uriHandler.openUri("https://google.com")
+                            navController.navigate(Cons.WEBVIEW)
+
                         },
                     name = "Terms & condition",
                     fontSize = 13.sp,
