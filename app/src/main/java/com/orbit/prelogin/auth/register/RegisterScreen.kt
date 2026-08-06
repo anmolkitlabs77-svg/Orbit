@@ -50,9 +50,6 @@ private fun registerGradientTitle() = buildAnnotatedString {
     }
 }
 
-/* -------------------------------------------------------------------- */
-/*  REGISTER SCREEN                                                     */
-/* -------------------------------------------------------------------- */
 @Composable
 fun RegisterScreen(navController: NavHostController) {
     var name by remember { mutableStateOf("") }
@@ -69,11 +66,16 @@ fun RegisterScreen(navController: NavHostController) {
         when (registerState) {
             is NetworkResult.Error<*> -> {
                 showLoader = false
-                Toast.makeText(activity, "Registertion failed. Please try again. ${registerState?.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Registration failed. Please try again. ${registerState?.message}", Toast.LENGTH_SHORT).show()
+                navController.navigate(Cons.MAINSCREEN){
+                    popUpTo(Cons.LOGIN){
+                        inclusive = true
+                    }
+                }
             }
             is NetworkResult.Success<*> -> {
                 showLoader = false
-                Toast.makeText(activity, "Registertion successful!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Registration successful!", Toast.LENGTH_SHORT).show()
             }
             is NetworkResult.Loading<*> -> {
                 showLoader = true
@@ -193,7 +195,11 @@ fun RegisterScreen(navController: NavHostController) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 CommonText("Already have an account?", color = colorResource(R.color.text_color2), fontSize = 12.5.sp)
                 TextButton(onClick = {
-                    navController.navigate("login")
+                    navController.navigate(Cons.LOGIN){
+                        popUpTo(Cons.LOGIN){
+                            inclusive = true
+                        }
+                    }
                 }) {
                     CommonText("Sign in", color = colorResource(R.color.cyan), fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold)
                 }

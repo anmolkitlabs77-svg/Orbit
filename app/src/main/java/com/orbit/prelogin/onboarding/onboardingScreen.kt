@@ -1,7 +1,10 @@
 package com.orbit.prelogin.onboarding
 
+import android.text.Layout
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -31,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.orbit.R
 import com.orbit.other.CommonText
+import com.orbit.other.Cons
 import com.orbit.other.GradientButton
 import com.orbit.other.StarsBackground
 import androidx.compose.ui.unit.lerp as lerpDp
@@ -75,7 +79,26 @@ fun OnboardingScreen(navController: NavHostController) {
                 .navigationBarsPadding()
                 .padding(horizontal = 26.dp, vertical = 40.dp),
         ) {
+            if(!isLastPage) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
 
+                ) {
+                    CommonText(
+                        modifier = Modifier.clickable{
+                            navController.navigate(Cons.LOGIN) {
+                                popUpTo(Cons.ONBOARDING) {
+                                    inclusive = true
+                                }
+                            }
+                        },
+                        name = "Skip",
+                        color = Color.White,
+                        fontSize = 13.sp
+                    )
+                }
+            }
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.weight(1f)
@@ -97,8 +120,8 @@ fun OnboardingScreen(navController: NavHostController) {
                 text = if (isLastPage) "Get Started" else "Continue",
                 onClick = {
                     if (isLastPage) {
-                        navController.navigate("login") {
-                            popUpTo("splash") {
+                        navController.navigate(Cons.LOGIN) {
+                            popUpTo(Cons.ONBOARDING) {
                                 inclusive = true
                             }
                         }
@@ -123,6 +146,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         Box(
             modifier = Modifier
                 .size(120.dp)

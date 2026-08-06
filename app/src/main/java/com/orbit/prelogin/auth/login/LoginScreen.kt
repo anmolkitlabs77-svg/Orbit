@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -33,10 +34,10 @@ import com.orbit.R
 import com.orbit.prelogin.auth.login.viewModel.loginVM
 import com.orbit.network.NetworkResult
 import com.orbit.other.CommonText
+import com.orbit.other.Cons
 import com.orbit.other.GradientButton
 import com.orbit.other.TextField
 import com.orbit.other.fieldText
-
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -46,7 +47,6 @@ fun LoginScreen(navController: NavHostController) {
     val activity = LocalActivity.current
     val scrollState = rememberScrollState()
 
-
     val viewModel : loginVM = hiltViewModel()
     val loginState by viewModel.login.observeAsState()
 
@@ -55,6 +55,12 @@ fun LoginScreen(navController: NavHostController) {
             is NetworkResult.Error<*> -> {
                 showLoader = false
                 Toast.makeText(activity, "Login failed. Please try again. ", Toast.LENGTH_SHORT).show()
+                navController.navigate(Cons.MAINSCREEN){
+                    popUpTo(Cons.LOGIN){
+                        inclusive = true
+                    }
+                }
+
             }
             is NetworkResult.Success<*> -> {
                 showLoader = false
@@ -145,13 +151,12 @@ fun LoginScreen(navController: NavHostController) {
             GradientButton(
                 text = "Sign In",
                 onClick = {
-                    navController.navigate("mainScreen")
-//                    activity?.let {
-//                        viewModel.login(
-//                            it,
-//                            email
-//                        )
-//                    }
+                    activity?.let {
+                        viewModel.login(
+                            it,
+                            email
+                        )
+                    }
                 },
                 enabled = email.isNotBlank()
             )
@@ -160,6 +165,13 @@ fun LoginScreen(navController: NavHostController) {
 
             Box(
                 modifier = Modifier.fillMaxWidth()
+                    .clickable{
+                        navController.navigate(Cons.MAINSCREEN){
+                            popUpTo(Cons.LOGIN){
+                                inclusive = true
+                            }
+                        }
+                    }
                     .height(52.dp)
                     .border(
                         width = 1.dp,
@@ -180,7 +192,7 @@ fun LoginScreen(navController: NavHostController) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 CommonText(name = "Don't have an account?", color = colorResource(R.color.dim), fontSize = 12.5.sp)
                 TextButton(onClick = {
-                    navController.navigate("register")
+                    navController.navigate(Cons.REGISTER)
                 }) {
                     CommonText(name = "Create one", color = colorResource(R.color.cyan), fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold)
                 }

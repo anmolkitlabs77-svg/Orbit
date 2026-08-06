@@ -8,8 +8,8 @@ class Cons {
         const val SPACE_BASE_URL = "https://api.nasa.gov/"
         const val SPACE_BASE_URL2 = "https://eonet.gsfc.nasa.gov/api/v2.1/"
         const val BASE_URL_AUTH = "https://difficult-uneatable-ebay.ngrok-free.dev/"
-        const val PRIVACY_POLICY_URL = ""
-        const val TERMS_CONDITION_URL = ""
+        const val PRIVACY_POLICY_URL = "https://google.com"
+        const val TERMS_CONDITION_URL = "https://youtube.com"
         const val NASA_GOV = "https://api.nasa.gov/"
 
         //Routes
@@ -19,6 +19,8 @@ class Cons {
         const val REGISTER = "register"
         const val MAINSCREEN = "mainScreen"
         const val WEBVIEW = "webView/{link}/{title}"
+
+        //Values
         const val APOD = "apod"
         const val NEOS = "neos"
         const val EVENTS = "events"
@@ -26,12 +28,6 @@ class Cons {
         const val PROFILE = "profile"
 
 
-
-
-
-
-
-        //Values
 
     }
 }
