@@ -3,10 +3,10 @@ package com.orbitwatch.ui.auth
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.material.icons.Icons
@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import com.orbit.R
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -87,10 +88,6 @@ fun RegisterScreen(navController: NavHostController) {
             else -> {}
         }
     }
-
-
-
-
 
 
     Box(
@@ -177,22 +174,8 @@ fun RegisterScreen(navController: NavHostController) {
 
             Spacer(Modifier.height(14.dp))
 
-            CommonText(
-                modifier = Modifier.clickable{
+            policyLink(navController)
 
-                    val link = Cons.NASA_GOV
-                    val title = "Nasa Api"
-
-                    navController.navigate(
-                        "webView/${Uri.encode(link)}/${Uri.encode(title)}"
-                    )
-                },
-                name = "By continuing you agree to Orbit Watch's Privacy Policy and Terms of Service.",
-                color = colorResource(R.color.dim),
-                fontSize = 10.5.sp,
-                lineHeight = 16.sp,
-                textAlign = TextAlign.Center
-            )
 
             Spacer(Modifier.height(20.dp))
 
@@ -210,4 +193,92 @@ fun RegisterScreen(navController: NavHostController) {
             }
         }
     }
+}
+
+@Composable
+private fun policyLink(navController: NavHostController) {
+    val annotatedText = buildAnnotatedString {
+
+        append("By continuing you agree to Orbit's ")
+
+        pushStringAnnotation(
+            tag = "PRIVACY",
+            annotation = Cons.PRIVACY_POLICY_URL
+        )
+        withStyle(
+            SpanStyle(
+                color = colorResource(R.color.cyan),
+                fontWeight = FontWeight.SemiBold
+            )
+        ) {
+            append("Privacy Policy")
+        }
+        pop()
+
+        append(" and ")
+
+        pushStringAnnotation(
+            tag = "TERMS",
+            annotation = Cons.TERMS_CONDITION_URL
+        )
+        withStyle(
+            SpanStyle(
+                color = colorResource(R.color.cyan),
+                fontWeight = FontWeight.SemiBold
+            )
+        ) {
+            append("Terms of Service")
+        }
+        pop()
+
+        append(".")
+    }
+    ClickableText(
+        text = annotatedText,
+        style = TextStyle(
+            color = colorResource(R.color.dim),
+            fontSize = 10.5.sp,
+            lineHeight = 16.sp,
+            textAlign = TextAlign.Center
+        ),
+        onClick = { offset ->
+
+            annotatedText.getStringAnnotations(
+                tag = "PRIVACY",
+                start = offset,
+                end = offset
+            ).firstOrNull()?.let {
+
+                val link = it.item
+                val title = "Privacy Policy"
+
+                navController.navigate(
+                    "webView/${
+                        Uri.encode(link)
+                    }/${
+                        Uri.encode(title)
+                    }"
+                )
+            }
+
+            annotatedText.getStringAnnotations(
+                tag = "TERMS",
+                start = offset,
+                end = offset
+            ).firstOrNull()?.let {
+
+                val link = it.item
+                val title = "Terms of Service"
+                navController.navigate(
+                    "webView/${
+                        Uri.encode(link)
+                    }/${
+                        Uri.encode(title)
+                    }"
+                )
+            }
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+
 }

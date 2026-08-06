@@ -5,6 +5,7 @@ class Cons {
 
         //Links
         const val spaceToken = "AVWCckewcQ2db6okT94L8lTAYlpicGbODClyZ1kQ"
+        const val SPACE_TOKEN = "space_token"
         const val SPACE_BASE_URL = "https://api.nasa.gov/"
         const val SPACE_BASE_URL2 = "https://eonet.gsfc.nasa.gov/api/v2.1/"
         const val BASE_URL_AUTH = "https://difficult-uneatable-ebay.ngrok-free.dev/"

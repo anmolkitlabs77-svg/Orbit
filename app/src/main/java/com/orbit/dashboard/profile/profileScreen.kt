@@ -1,5 +1,6 @@
 package com.orbit.dashboard.profile
 
+import android.app.AlertDialog
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,9 +19,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +39,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +65,10 @@ fun Profile(navController: NavHostController) {
 
     var isGuest by rememberSaveable {mutableStateOf(App.sharedPref.getBoolean(Cons.IS_GUEST, false)) }
 
-    var text by remember { mutableStateOf("") }
+    var text by rememberSaveable {mutableStateOf(App.sharedPref.getString(Cons.SPACE_TOKEN, "")) }
+    var showdialog by rememberSaveable {mutableStateOf(false) }
+
+    var edit by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
 
@@ -73,27 +84,50 @@ fun Profile(navController: NavHostController) {
                 .verticalScroll(scrollState)
 
         ) {
-            Card(
-                modifier = Modifier
-                    .padding(top = 20.dp)
-                    .size(100.dp)
-                    .border(
-                        width = 2.dp,
-                        color = colorResource(R.color.app_blue),
-                        shape = CircleShape
-                    ),
-                shape = CircleShape
-            ) {
-                AsyncImage(
-                    model = "https://www.vecteezy.com/photo/68964462-vibrant-hummingbird-feeding-on-stunning-red-flower",
-                    contentDescription = "Profile Image",
-//                    placeholder = painterResource(R.drawable.ic_profile_placeholder),
-//                    error = painterResource(R.drawable.ic_profile_placeholder),
-//                    fallback = painterResource(R.drawable.ic_profile_placeholder),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+            if(showdialog) {
+                AlertDialog(
+                    onDismissRequest = {
+              showdialog = false
+                    },
+                    title = {
+                        Text("Delete Account")
+                    },
+                    text = {
+                        Text("Are you sure you want to delete your account?")
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                       showdialog = false
+                                // Delete account
+                            }
+                        ) {
+                            Text("Delete")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                            showdialog = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
                 )
             }
+
+
+                Icon(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .size(100.dp),
+                    painter = painterResource(R.drawable.logo,),
+                    contentDescription = "logo",
+                    tint = Color.Unspecified
+                    )
+
+
             if(!isGuest) {
                 CommonText(
                     modifier = Modifier.padding(top = 10.dp),
@@ -184,14 +218,25 @@ fun Profile(navController: NavHostController) {
                                 .height(56.dp),
                             shape = RoundedCornerShape(14.dp),
                             singleLine = true,
+                            enabled = if(edit) true else false,
+                            textStyle = TextStyle(
+                                color = Color.White),
+
+                            visualTransformation = if (edit) {
+                                VisualTransformation.None
+                            } else {
+                                PasswordVisualTransformation()
+                            },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White,
-                                focusedBorderColor = colorResource(R.color.app_blue),
-                                unfocusedBorderColor = colorResource(R.color.app_blue),
-                                cursorColor = Color.White,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent
+                                focusedContainerColor = colorResource(R.color.fieldbg),
+                                unfocusedContainerColor = colorResource(R.color.fieldbg),
+                                disabledContainerColor = colorResource(R.color.fieldbg),
+                                focusedBorderColor = colorResource(R.color.cyan),
+                                unfocusedBorderColor = colorResource(R.color.cyan),
+                                focusedTextColor = colorResource(R.color.white),
+                                unfocusedTextColor = colorResource(R.color.white),
+                                cursorColor = colorResource(R.color.cyan),
+                                disabledBorderColor = colorResource(R.color.app_blue),
                             )
                         )
                         Box(
@@ -203,11 +248,37 @@ fun Profile(navController: NavHostController) {
                                 )
                                 .border(1.dp,
                                     color = colorResource(R.color.app_blue),
-                                    RoundedCornerShape(14.dp))
-                        )
+                                    RoundedCornerShape(14.dp)),
+                            contentAlignment = Alignment.Center
+                        ){
+                            if(edit) {
+                                Icon(
+                                    modifier = Modifier.clickable{
+                                        if(text.isNullOrEmpty()){
+                                            showdialog = true
+                                            return@clickable
+                                        }
+                                        edit = false
+                                        App.sharedPref.putString(Cons.SPACE_TOKEN,text)
+                                    },
+                                    painter = painterResource(R.drawable.ic_save),
+                                    contentDescription = "edit",
+                                    tint = Color.Unspecified
+                                )
+                            }
+                            else {
+                                Icon(
+                                    modifier = Modifier.clickable{
+                                        edit = true
+                                    },
+                                    painter = painterResource(R.drawable.ic_edit),
+                                    contentDescription = "save",
+                                    tint = Color.Unspecified
+                                )
+                            }
+                        }
                     }
                     val annotatedText = buildAnnotatedString {
-                        // Normal text
                         withStyle(
                             SpanStyle(
                                 color = colorResource(R.color.text_color2)
@@ -219,7 +290,7 @@ fun Profile(navController: NavHostController) {
                         // Clickable text
                         pushStringAnnotation(
                             tag = "LINK",
-                            annotation = "https://google.com"
+                            annotation = Cons.NASA_GOV
                         )
 
                         withStyle(
@@ -246,7 +317,7 @@ fun Profile(navController: NavHostController) {
                             end = offset
                         ).firstOrNull()?.let {
 
-                            val link = Cons.NASA_GOV
+                            val link = it.item
                             val title = "Nasa Api"
 
                             navController.navigate(
@@ -280,7 +351,14 @@ fun Profile(navController: NavHostController) {
                         .border(1.dp,
                             color = colorResource(R.color.app_blue),
                             RoundedCornerShape(14.dp))
-                )
+                ){
+                    Icon(
+                        modifier = Modifier.padding(5.dp)
+                        .size(50.dp),
+                    painter = painterResource(R.drawable.ic_github),
+                        contentDescription = "github",
+                        tint = Color.Unspecified)
+                }
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
@@ -292,7 +370,14 @@ fun Profile(navController: NavHostController) {
                         .border(1.dp,
                             color = colorResource(R.color.app_blue),
                             RoundedCornerShape(14.dp))
-                )
+                ){
+                    Icon(
+                        modifier = Modifier.padding(5.dp)
+                            .size(50.dp),
+                        painter = painterResource(R.drawable.ic_insta),
+                        contentDescription = "github",
+                        tint = Color.Unspecified)
+                }
                 Box(
                     modifier = Modifier
                         .size(56.dp)
@@ -303,7 +388,14 @@ fun Profile(navController: NavHostController) {
                         .border(1.dp,
                             color = colorResource(R.color.app_blue),
                             RoundedCornerShape(14.dp))
-                )
+                ){
+                    Icon(
+                        modifier = Modifier.padding(5.dp)
+                            .size(50.dp),
+                        painter = painterResource(R.drawable.ic_linkedin),
+                        contentDescription = "github",
+                        tint = Color.Unspecified)
+                }
             }
 
 
@@ -365,8 +457,12 @@ fun Profile(navController: NavHostController) {
                 CommonText(
                     modifier = Modifier.padding(end = 7.dp)
                         .clickable{
-                            navController.navigate(Cons.WEBVIEW)
+                            val link = Cons.TERMS_CONDITION_URL
+                            val title = "Terms of Service"
 
+                            navController.navigate(
+                                "webView/${Uri.encode(link)}/${Uri.encode(title)}"
+                            )
                         },
                     name = "Terms & condition",
                     fontSize = 13.sp,

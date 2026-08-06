@@ -4,13 +4,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.orbit.dashboard.base.App
@@ -63,9 +68,23 @@ fun SplashScreen(navController: NavController){
             modifier = Modifier.background(color = colorResource(R.color.black)),
             horizontalAlignment = Alignment.CenterHorizontally,) {
 
-            CommonText(name = "Orbit",
-                fontSize = 30.sp,
+            Icon(
+                modifier = Modifier.height(150.dp),
+                painter = painterResource(R.drawable.logo,),
+                contentDescription = "logo",
+                tint = Color.Unspecified
+
+            )
+            CommonText(
+                modifier = Modifier.padding(top = 10.dp),
+                name = "ORBIT",
+                fontSize = 20.sp,
                 color = Color.White)
+
+            CommonText("Every Orbit Tells a Story.",
+                fontSize = 11.sp,
+                color = Color.White
+                )
         }
 
     }
