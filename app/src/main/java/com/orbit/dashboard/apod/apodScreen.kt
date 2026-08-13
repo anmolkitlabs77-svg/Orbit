@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +46,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun Apod(navController: NavHostController) {
 
-    val context = LocalContext.current
     val viewModel : picbyDayVM = hiltViewModel()
     val pictures by viewModel.pictures.collectAsState(initial = emptyList())
     var selectedIndex = remember { mutableStateOf(0) }
@@ -56,10 +54,6 @@ fun Apod(navController: NavHostController) {
     val scrollState = rememberScrollState()
     val exp = "The explosion is over, but the consequences continue. About twelve thousand years ago, a relatively normal star in the constellation Vela suddenly exploded, creating a strange point of light briefly visible to humans living near the beginning of recorded history.  The outer layers of the star crashed into the interstellar medium, driving a shock wave that is still visible today.  The featured image, taken piecemeal over 60 hours from the Khomas Region of Namibia, captures some of that filamentary and gigantic shock in visible light, with details highlighted by hydrogen (red) and oxygen (blue) emissions. As gas flies away from the detonated star, it decays and reacts with the interstellar medium, producing light in many different colors and energy bands. Remaining at the center of the Vela Supernova Remnant is a pulsar, a star as dense as nuclear matter that spins around more than ten times in a single second.   Explore the Universe: Random APOD Generator"
 
-
-    LaunchedEffect(Unit) {
-        viewModel.callWorker(context)
-    }
 
     Box(
         modifier = Modifier

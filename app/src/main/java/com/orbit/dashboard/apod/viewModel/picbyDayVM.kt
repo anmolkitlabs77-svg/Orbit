@@ -11,12 +11,16 @@ import androidx.work.workDataOf
 import com.orbit.network.Repository
 import com.orbit.network.room_space.SpaceWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class picbyDayVM @Inject constructor(private val repository: Repository): ViewModel(){
+class picbyDayVM @Inject constructor(
+    private val repository: Repository,
+    @ApplicationContext private val context: Context
+): ViewModel(){
 
     
     @RequiresApi(Build.VERSION_CODES.O)
@@ -29,7 +33,11 @@ class picbyDayVM @Inject constructor(private val repository: Repository): ViewMo
         "END_DATE" to Enddate.toString(),
         "SCREEN" to 1)
 
-    fun callWorker(context: Context){
+    init {
+        callWorker()
+    }
+
+    private fun callWorker(){
 
         val request = OneTimeWorkRequestBuilder<SpaceWorker>()
             .setInputData(data)
