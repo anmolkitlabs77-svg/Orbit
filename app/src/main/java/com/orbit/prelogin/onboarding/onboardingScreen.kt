@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
@@ -25,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,19 +42,19 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 private data class OnboardingPage(
-    val icon: ImageVector,
+    val icon: Int,
     val title: String,
     val subtitle: String
 )
 
 private val onboardingPages = listOf(
     OnboardingPage(
-        icon = Icons.Default.Home,
+        icon = R.drawable.ic_first,
         title = "Know the storm before it arrives",
-        subtitle = "Orbit Watch pulls live solar flare, CME and geomagnetic storm data straight from NASA's DONKI feed — the moment it's issued."
+        subtitle = "Orbit pulls live solar flare, CME and geomagnetic storm data straight from NASA's DONKI feed — the moment it's issued."
     ),
     OnboardingPage(
-        icon = Icons.Default.Home,
+        icon = R.drawable.sec,
         title = "Every object, tracked in real time",
         subtitle = "Follow near-Earth asteroids, drifting icebergs and wildfires as they're logged by NASA's EONET and NEO feeds."
     )
@@ -154,32 +151,32 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         verticalArrangement = Arrangement.Center
     ) {
 
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.radialGradient(listOf(colorResource(R.color.violet).copy(alpha = 0.35f), Color.Transparent))
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(84.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(listOf(Color(0xFF2C2960), Color(0xFF0A0B1C)))
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
+//        Box(
+//            modifier = Modifier
+//                .size(120.dp)
+//                .clip(CircleShape)
+//                .background(
+//                    Brush.radialGradient(listOf(colorResource(R.color.violet).copy(alpha = 0.35f), Color.Transparent))
+//                ),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Box(
+//                modifier = Modifier
+//                    .size(84.dp)
+//                    .clip(CircleShape)
+//                    .background(
+//                        Brush.linearGradient(listOf(Color(0xFF2C2960), Color(0xFF0A0B1C)))
+//                    ),
+//                contentAlignment = Alignment.Center
+//            ) {
                 Icon(
-                    imageVector = page.icon,
+                    modifier = Modifier.size(150.dp),
+                    painter = painterResource(page.icon),
                     contentDescription = null,
-                    tint = colorResource(R.color.cyan),
-                    modifier = Modifier.size(38.dp)
+                    tint = Color.Unspecified,
                 )
-            }
-        }
+//            }
+//        }
 
         Spacer(modifier = Modifier.height(28.dp))
 

@@ -16,23 +16,26 @@ import javax.inject.Inject
 @HiltViewModel
 class loginVM @Inject constructor(val repository: Repository) : ViewModel() {
 
+    private val _email = MutableLiveData<String>("")
+    val email : LiveData<String> = _email
 
-    private val _login =
-        MutableLiveData<NetworkResult<LoginVerifyResponse>>()
+    private val _login = MutableLiveData<NetworkResult<LoginVerifyResponse>>()
 
     val login: LiveData<NetworkResult<LoginVerifyResponse>>
         get() = _login
 
+    fun updateEmail(Email: String){
+        _email.value = Email
+    }
+
     fun login(
-        activity: Activity,
-        email: String
-    ) = viewModelScope.launch {
+        activity: Activity,) = viewModelScope.launch {
 
         _login.value = NetworkResult.Loading()
 
         _login.value = repository.login(
             activity,
-            email)
+            email.value)
     }
 
 }

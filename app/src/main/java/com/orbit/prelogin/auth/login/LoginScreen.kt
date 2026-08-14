@@ -29,6 +29,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.navigation.NavHostController
 import com.orbit.R
 import com.orbit.dashboard.base.App
@@ -38,8 +42,16 @@ import com.orbit.other.CommonText
 import com.orbit.other.Cons
 import com.orbit.other.GradientButton
 import com.orbit.other.TextField
+import com.orbit.other.cyanVioletGradient
 import com.orbit.other.fieldText
 
+@Composable
+private fun loginGradientTitle() = buildAnnotatedString {
+    append("Welcome ")
+    withStyle(style = SpanStyle(brush = cyanVioletGradient())) {
+        append("back")
+    }
+}
 @Composable
 fun LoginScreen(navController: NavHostController) {
 
@@ -47,26 +59,28 @@ fun LoginScreen(navController: NavHostController) {
     var showLoader by remember { mutableStateOf(false) }
     val activity = LocalActivity.current
     val scrollState = rememberScrollState()
-
     val viewModel : loginVM = hiltViewModel()
     val loginState by viewModel.login.observeAsState()
+    val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")
 
     LaunchedEffect(loginState) {
         when (loginState) {
             is NetworkResult.Error<*> -> {
                 showLoader = false
-                App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
                 Toast.makeText(activity, "Login failed. Please try again. ", Toast.LENGTH_SHORT).show()
+
+            }
+            is NetworkResult.Success<*> -> {
+                App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
+                showLoader = false
+                Toast.makeText(activity, "Login successful!", Toast.LENGTH_SHORT).show()
                 navController.navigate(Cons.MAINSCREEN){
                     popUpTo(Cons.LOGIN){
                         inclusive = true
                     }
                 }
 
-            }
-            is NetworkResult.Success<*> -> {
-                showLoader = false
-                Toast.makeText(activity, "Login successful!", Toast.LENGTH_SHORT).show()
+
             }
             is NetworkResult.Loading<*> -> {
                 showLoader = true
@@ -76,14 +90,12 @@ fun LoginScreen(navController: NavHostController) {
         }
     }
 
-
     Box(
         modifier = Modifier
             .safeDrawingPadding()
             .fillMaxSize()
     ) {
         StarsBackground()
-
 
         Column(
             modifier = Modifier
@@ -94,25 +106,16 @@ fun LoginScreen(navController: NavHostController) {
         ) {
             Spacer(Modifier.height(24.dp))
 
-            Box(
-                modifier = Modifier
-                    .size(84.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.radialGradient(
-                            listOf(Color(0xFF2C2960), Color(0xFF12142C), Color(0xFF0A0B1C))
-                        )
-                    )
-                    .border(1.dp, colorResource(R.color.line), CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Filled.Lock, null, tint = colorResource(R.color.cyan), modifier = Modifier.size(32.dp))
-            }
-
+            Icon(
+                modifier = Modifier.height(84.dp),
+                painter = painterResource(R.drawable.logo,),
+                contentDescription = "logo",
+                tint = Color.Unspecified
+            )
             Spacer(Modifier.height(24.dp))
 
-            CommonText(
-                "Welcome back",
+            Text(
+                loginGradientTitle(),
                 color = colorResource(R.color.ink),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -121,8 +124,9 @@ fun LoginScreen(navController: NavHostController) {
             Spacer(Modifier.height(8.dp))
             CommonText(
                 "Sign in to keep tracking live solar flares,\nCMEs and geomagnetic storms.",
-                color = colorResource(R.color.dim),
+                color = colorResource(R.color.text_color2),
                 fontSize = 13.sp,
+                lineHeight = 20.sp,
                 textAlign = TextAlign.Center
             )
 
@@ -154,11 +158,16 @@ fun LoginScreen(navController: NavHostController) {
             GradientButton(
                 text = "Sign In",
                 onClick = {
-                    activity?.let {
-                        viewModel.login(
-                            it,
-                            email
-                        )
+
+                    if(email.matches(emailRegex)) {
+                        activity?.let {
+                            viewModel.login(
+                                it,)
+                        }
+                    }
+                    else {
+                        Toast.makeText(activity, "Invalid email address", Toast.LENGTH_SHORT).show()
+
                     }
                 },
                 enabled = email.isNotBlank()

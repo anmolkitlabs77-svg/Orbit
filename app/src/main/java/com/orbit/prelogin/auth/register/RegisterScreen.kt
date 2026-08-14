@@ -19,6 +19,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import com.orbit.R
@@ -105,8 +106,16 @@ fun RegisterScreen(navController: NavHostController) {
                 .padding(horizontal = 26.dp, vertical = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(24.dp))
 
+            Icon(
+                modifier = Modifier.height(84.dp),
+                painter = painterResource(R.drawable.logo,),
+                contentDescription = "logo",
+                tint = Color.Unspecified
+
+            )
+            Spacer(Modifier.height(24.dp))
 
             Text(
                 registerGradientTitle(),
