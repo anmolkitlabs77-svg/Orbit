@@ -55,42 +55,43 @@ private fun registerGradientTitle() = buildAnnotatedString {
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var showLoader by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
 
+    val scrollState = rememberScrollState()
 
     val activity = LocalActivity.current
     val viewModel : registerVM = hiltViewModel()
-    val registerState by viewModel.register.observeAsState()
+    val name by viewModel.name.observeAsState("")
+    val email by viewModel.email.observeAsState("")
+    val showLoader by viewModel.displayLoader.observeAsState(false)
+    val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")
 
-    LaunchedEffect(registerState) {
-        when (registerState) {
-            is NetworkResult.Error<*> -> {
-                showLoader = false
+    LaunchedEffect(Unit) {
 
-                Toast.makeText(activity, "Registration failed. Please try again. ${registerState?.message}", Toast.LENGTH_SHORT).show()
+        viewModel.registerEvent.collect { message ->
 
-            }
-            is NetworkResult.Success<*> -> {
-                showLoader = false
-                Toast.makeText(activity, "Registration successful!", Toast.LENGTH_SHORT).show()
-                App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
-                App.sharedPref.putBoolean(Cons.IS_GUEST,false)
+            Toast.makeText(
+                activity,
+                message,
+                Toast.LENGTH_SHORT
+            ).show()
 
-                navController.navigate(Cons.MAINSCREEN){
-                    popUpTo(Cons.LOGIN){
+
+            if (message == "SignUp successful!") {
+
+                App.sharedPref.putBoolean(
+                    Cons.IS_USER_LOGGEDIN,
+                    true
+                )
+
+                navController.navigate(Cons.MAINSCREEN) {
+                    popUpTo(Cons.LOGIN) {
                         inclusive = true
                     }
                 }
             }
-            is NetworkResult.Loading<*> -> {
-                showLoader = true
-            }
-            else -> {}
         }
     }
+
 
 
     Box(
@@ -145,13 +146,13 @@ fun RegisterScreen(navController: NavHostController) {
                 fieldText("Your details")
                 TextField(
                     value = name,
-                    onValueChange = { name = it },
+                    onValueChange = { viewModel.updateName(it) },
                     label = "Full name",
                     leadingIcon = Icons.Filled.Person
                 )
                 TextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {  viewModel.updateEmail(it) },
                     label = "Email address",
                     leadingIcon = Icons.Filled.Email,
                     keyboardType = KeyboardType.Email
@@ -171,13 +172,15 @@ fun RegisterScreen(navController: NavHostController) {
                 text = "Create Account",
                 onClick = {
                     activity?.let {
-                        viewModel.register(
-                            it,
-                            RegisterRequest(
-                                email = email,
-                                name = name
+                        if(email.matches(emailRegex)) {
+                            viewModel.register(
+                                it,
                             )
-                        )
+                        }
+                        else {
+                            Toast.makeText(activity, "Invalid email address", Toast.LENGTH_SHORT).show()
+                        }
+
                     }
                 },
                 enabled = name.isNotBlank() && email.isNotBlank()

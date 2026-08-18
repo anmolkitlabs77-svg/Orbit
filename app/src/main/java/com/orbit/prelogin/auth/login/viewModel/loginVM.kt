@@ -36,8 +36,7 @@ class loginVM @Inject constructor(val repository: Repository) : ViewModel() {
         _email.value = Email
     }
 
-    fun login(
-        activity: Activity,) = viewModelScope.launch {
+    fun login(activity: Activity,) = viewModelScope.launch {
 
         _login.value = NetworkResult.Loading()
         _displayLoader.value = true

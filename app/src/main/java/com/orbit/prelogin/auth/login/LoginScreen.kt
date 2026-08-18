@@ -141,7 +141,6 @@ fun LoginScreen(navController: NavHostController) {
                     value = email,
                     onValueChange = {
                         viewModel.updateEmail(it)
-//                        email = it
                                     },
                     label = "Email address",
                     leadingIcon = Icons.Filled.Email,
