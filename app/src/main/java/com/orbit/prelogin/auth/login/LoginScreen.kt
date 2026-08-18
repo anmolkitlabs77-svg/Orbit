@@ -55,38 +55,38 @@ private fun loginGradientTitle() = buildAnnotatedString {
 @Composable
 fun LoginScreen(navController: NavHostController) {
 
-    var email by remember { mutableStateOf("") }
-    var showLoader by remember { mutableStateOf(false) }
     val activity = LocalActivity.current
+
     val scrollState = rememberScrollState()
     val viewModel : loginVM = hiltViewModel()
-    val loginState by viewModel.login.observeAsState()
+    val showLoader by viewModel.displayLoader.observeAsState(false)
+    val email by viewModel.email.observeAsState("")
     val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")
 
-    LaunchedEffect(loginState) {
-        when (loginState) {
-            is NetworkResult.Error<*> -> {
-                showLoader = false
-                Toast.makeText(activity, "Login failed. Please try again. ", Toast.LENGTH_SHORT).show()
+    LaunchedEffect(Unit) {
 
-            }
-            is NetworkResult.Success<*> -> {
-                App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
-                showLoader = false
-                Toast.makeText(activity, "Login successful!", Toast.LENGTH_SHORT).show()
-                navController.navigate(Cons.MAINSCREEN){
-                    popUpTo(Cons.LOGIN){
+        viewModel.loginEvent.collect { message ->
+
+            Toast.makeText(
+                activity,
+                message,
+                Toast.LENGTH_SHORT
+            ).show()
+
+
+            if (message == "Login successful!") {
+
+                App.sharedPref.putBoolean(
+                    Cons.IS_USER_LOGGEDIN,
+                    true
+                )
+
+                navController.navigate(Cons.MAINSCREEN) {
+                    popUpTo(Cons.LOGIN) {
                         inclusive = true
                     }
                 }
-
-
             }
-            is NetworkResult.Loading<*> -> {
-                showLoader = true
-            }
-
-            else -> {}
         }
     }
 
@@ -139,7 +139,10 @@ fun LoginScreen(navController: NavHostController) {
                 fieldText("Account")
                 TextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        viewModel.updateEmail(it)
+//                        email = it
+                                    },
                     label = "Email address",
                     leadingIcon = Icons.Filled.Email,
                     keyboardType = KeyboardType.Email

@@ -69,19 +69,21 @@ fun RegisterScreen(navController: NavHostController) {
         when (registerState) {
             is NetworkResult.Error<*> -> {
                 showLoader = false
+
+                Toast.makeText(activity, "Registration failed. Please try again. ${registerState?.message}", Toast.LENGTH_SHORT).show()
+
+            }
+            is NetworkResult.Success<*> -> {
+                showLoader = false
+                Toast.makeText(activity, "Registration successful!", Toast.LENGTH_SHORT).show()
                 App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
                 App.sharedPref.putBoolean(Cons.IS_GUEST,false)
 
-                Toast.makeText(activity, "Registration failed. Please try again. ${registerState?.message}", Toast.LENGTH_SHORT).show()
                 navController.navigate(Cons.MAINSCREEN){
                     popUpTo(Cons.LOGIN){
                         inclusive = true
                     }
                 }
-            }
-            is NetworkResult.Success<*> -> {
-                showLoader = false
-                Toast.makeText(activity, "Registration successful!", Toast.LENGTH_SHORT).show()
             }
             is NetworkResult.Loading<*> -> {
                 showLoader = true
