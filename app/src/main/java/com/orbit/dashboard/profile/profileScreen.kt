@@ -1,6 +1,7 @@
 package com.orbit.dashboard.profile
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,6 +57,7 @@ import com.orbit.dashboard.base.App
 import com.orbit.other.BlurEffect
 import com.orbit.other.CommonText
 import com.orbit.other.Cons
+import com.orbit.other.CustomDialog
 import com.orbit.other.GradientButton
 import com.orbit.other.StarsBackground
 import com.orbit.other.fieldText
@@ -67,6 +69,7 @@ fun Profile(navController: NavHostController) {
 
     var text by rememberSaveable {mutableStateOf(App.sharedPref.getString(Cons.SPACE_TOKEN, "")) }
     var showdialog by rememberSaveable {mutableStateOf(false) }
+    var showdialog2 by rememberSaveable {mutableStateOf(false) }
 
     var edit by remember { mutableStateOf(false) }
 
@@ -83,37 +86,43 @@ fun Profile(navController: NavHostController) {
                 .fillMaxSize()
                 .verticalScroll(scrollState)
 
-        ) {
-            if(showdialog) {
-                AlertDialog(
-                    onDismissRequest = {
-              showdialog = false
-                    },
-                    title = {
-                        Text("Delete Account")
-                    },
-                    text = {
-                        Text("Are you sure you want to delete your account?")
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                       showdialog = false
-                                // Delete account
+        ){
+            if(showdialog2){
+                    CustomDialog(
+                        showDialog = showdialog2,
+                        title = "LogOut",
+                        message = "Are you sure you want to logout from your account?",
+                        yesText = "Yes",
+                        noText = "No",
+                        onDismiss = {
+                            showdialog2 = false
+
+
+                        },
+                        onDelete = {
+                            showdialog2 = false
+                            App.sharedPref.clearAll()
+                            App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE, true)
+                            navController.navigate(Cons.LOGIN) {
+                                popUpTo(Cons.MAINSCREEN) {
+                                    inclusive = true
+                                }
                             }
-                        ) {
-                            Text("Delete")
-                        }
+                        },
+                    )
+            }
+
+            if(showdialog){
+                CustomDialog(
+                    showDialog = showdialog,
+                    title = "Missing API Key",
+                    message = "Please provide an API key before continuing.",
+                    yesText = "Ok",
+                    noText = "",
+                    onDismiss = {},
+                    onDelete = {
+                        showdialog = false
                     },
-                    dismissButton = {
-                        TextButton(
-                            onClick = {
-                            showdialog = false
-                            }
-                        ) {
-                            Text("Cancel")
-                        }
-                    }
                 )
             }
 
@@ -403,13 +412,7 @@ fun Profile(navController: NavHostController) {
                 Box(
                     modifier = Modifier
                         .clickable{
-                            App.sharedPref.clearAll()
-                            App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE,true)
-                            navController.navigate(Cons.LOGIN){
-                                popUpTo(Cons.MAINSCREEN){
-                                    inclusive = true
-                                }
-                            }
+                          showdialog2 = true
                         }
                         .padding(10.dp)
                         .fillMaxWidth()

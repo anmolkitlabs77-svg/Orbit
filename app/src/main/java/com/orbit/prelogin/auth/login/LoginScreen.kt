@@ -76,10 +76,9 @@ fun LoginScreen(navController: NavHostController) {
 
             if (message == "Login successful!") {
 
-                App.sharedPref.putBoolean(
-                    Cons.IS_USER_LOGGEDIN,
-                    true
-                )
+                App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
+                App.sharedPref.putBoolean(Cons.IS_GUEST,false)
+
 
                 navController.navigate(Cons.MAINSCREEN) {
                     popUpTo(Cons.LOGIN) {

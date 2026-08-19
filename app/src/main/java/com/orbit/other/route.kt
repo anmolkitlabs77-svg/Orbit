@@ -3,6 +3,8 @@ package com.orbit.other
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +23,37 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Cons.SPLASH) {
+        startDestination = Cons.SPLASH,
+        // Forward navigation
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(300)
+            )
+        },
+
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(300)
+            )
+        },
+
+        // Back navigation
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(300)
+            )
+        },
+
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(300)
+            )
+        }
+    ) {
         composable(Cons.SPLASH) {SplashScreen(navController)}
         composable(Cons.ONBOARDING) {OnboardingScreen(navController)}
         composable(Cons.LOGIN) {LoginScreen(navController)}

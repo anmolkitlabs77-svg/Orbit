@@ -10,11 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,18 +32,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.orbit.R
 import com.orbit.dashboard.apod.viewModel.picbyDayVM
 import com.orbit.other.BlurEffect
+import com.orbit.other.CommonText
 import com.orbit.other.StarsBackground
 import com.orbit.other.helper
+import com.orbit.other.topAppBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -81,13 +88,26 @@ fun Apod(navController: NavHostController) {
 
             ) {
 
-                AsyncImage(
+                SubcomposeAsyncImage(
                     model = selectedPicture?.imageUrl,
                     contentDescription = selectedPicture?.title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    error = {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.logo),
+                                contentDescription = "Orbit",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(100.dp)
+                            )
+                        }
+                    }
                 )
 
                 Box(
@@ -123,7 +143,7 @@ fun Apod(navController: NavHostController) {
             }
 
 
-            Text(
+            CommonText(
                 "ABOUT THIS IMAGE",
                 color = colorResource(R.color.text_blue),
                 fontSize = 16.sp,
@@ -151,6 +171,12 @@ fun Apod(navController: NavHostController) {
 
                 )
             }
+
+            CommonText(
+                "COPYRIGHT",
+                color = colorResource(R.color.text_blue),
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 10.dp, top = 10.dp))
 
             Box(
                 modifier = Modifier
@@ -210,13 +236,26 @@ fun Apod(navController: NavHostController) {
                                 )
                         )
                         {
-                            AsyncImage(
+                            SubcomposeAsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(pictures[it].imageUrl)
                                     .crossfade(true)
                                     .build(),
                                 contentDescription = "NASA APOD",
-                                contentScale = ContentScale.Crop
+                                contentScale = ContentScale.Crop,
+                                error = {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.logo),
+                                            contentDescription = "Orbit",
+                                            tint = Color.Unspecified,
+                                            modifier = Modifier.size(50.dp)
+                                        )
+                                    }
+                                }
                             )
                         }
 
@@ -224,7 +263,8 @@ fun Apod(navController: NavHostController) {
                             helper.formatDate(pictures[it].date),
                             fontSize = 14.sp,
                             color = colorResource(R.color.text2_blue),
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+
 
                         )
                     }
