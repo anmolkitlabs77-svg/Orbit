@@ -7,10 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -20,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.colorResource
@@ -142,61 +140,79 @@ fun OnboardingScreen(navController: NavHostController) {
 
 @Composable
 private fun OnboardingPageContent(page: OnboardingPage) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-//        Box(
-//            modifier = Modifier
-//                .size(120.dp)
-//                .clip(CircleShape)
-//                .background(
-//                    Brush.radialGradient(listOf(colorResource(R.color.violet).copy(alpha = 0.35f), Color.Transparent))
-//                ),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Box(
-//                modifier = Modifier
-//                    .size(84.dp)
-//                    .clip(CircleShape)
-//                    .background(
-//                        Brush.linearGradient(listOf(Color(0xFF2C2960), Color(0xFF0A0B1C)))
-//                    ),
-//                contentAlignment = Alignment.Center
-//            ) {
-                Icon(
-                    modifier = Modifier.size(150.dp),
-                    painter = painterResource(page.icon),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
+    if (isLandscape) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 30.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(90.dp)
+                    .weight(0.4f),
+                painter = painterResource(page.icon),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+            Column(
+                modifier = Modifier.weight(0.6f),
+                horizontalAlignment = Alignment.Start
+            ) {
+                CommonText(
+                    name = page.title,
+                    color = colorResource(R.color.ink),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Start,
+                    lineHeight = 26.sp
                 )
-//            }
-//        }
-
-        Spacer(modifier = Modifier.height(28.dp))
-
-        CommonText(
-            name = page.title,
-            color = colorResource(R.color.ink),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            lineHeight = 30.sp)
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        CommonText(
-            name = page.subtitle,
-            color = colorResource(R.color.text_color2),
-            fontSize = 13.sp,
-            textAlign = TextAlign.Center,
-            lineHeight = 20.sp
-        )
+                Spacer(modifier = Modifier.height(8.dp))
+                CommonText(
+                    name = page.subtitle,
+                    color = colorResource(R.color.text_color2),
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Start,
+                    lineHeight = 18.sp
+                )
+            }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 30.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(150.dp),
+                painter = painterResource(page.icon),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+            Spacer(modifier = Modifier.height(28.dp))
+            CommonText(
+                name = page.title,
+                color = colorResource(R.color.ink),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                lineHeight = 30.sp
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            CommonText(
+                name = page.subtitle,
+                color = colorResource(R.color.text_color2),
+                fontSize = 13.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp
+            )
+        }
     }
 }
 
