@@ -1,5 +1,6 @@
 package com.orbit.dashboard.weather
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,7 +41,6 @@ import com.orbit.other.BlurEffect
 import com.orbit.other.CommonText
 import com.orbit.other.ErrorCompose
 
-@Preview
 @Composable
 fun Weather(navController: NavHostController) {
 
@@ -47,6 +48,12 @@ fun Weather(navController: NavHostController) {
     val weatherData by viewModel.weather.collectAsState(initial = emptyList())
 
 
+    LaunchedEffect(Unit) {
+        weatherData.forEach{
+            Log.d("eirutyeiuteyirutyeitueyitu","item = ${it.messageID}")
+
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -158,7 +165,7 @@ fun Weather(navController: NavHostController) {
                 }
             }
 
-            if(weatherData.size > 0 ) {
+            if(weatherData.size > 0) {
                 item {
                     Text(
                         modifier = Modifier.padding(vertical = 10.dp),
@@ -204,7 +211,7 @@ fun Weather(navController: NavHostController) {
                                     verticalAlignment = Alignment.Top
                                 ) {
                                     Text(
-                                        text = weatherData[it].messageId,
+                                        text = weatherData[it].messageID,
                                         color = colorResource(R.color.title),
                                         fontSize = 19.sp,
                                         fontWeight = FontWeight.Medium,
@@ -291,3 +298,59 @@ private fun StatColumn(label: String, value: String) {
 //        Text(text = text, color = textColor, fontSize = 13.sp, fontWeight = FontWeight.Medium)
 //    }
 //}
+
+fun extractCmeInfo(body: String): Map<String, String> {
+
+    val result = mutableMapOf<String, String>()
+
+    Regex("""([SCOR]{1,2}-type)\s+CME""")
+        .find(body)
+        ?.groupValues
+        ?.getOrNull(1)
+        ?.let {
+            result["type"] = it
+        }
+
+    Regex("""Estimated speed:\s*~?([\d.]+)\s*km/s""")
+        .find(body)
+        ?.groupValues
+        ?.getOrNull(1)
+        ?.let {
+            result["speed"] = "$it km/s"
+        }
+
+    Regex("""Estimated opening half-angle:\s*([\d.]+)\s*deg""")
+        .find(body)
+        ?.groupValues
+        ?.getOrNull(1)
+        ?.let {
+            result["halfAngle"] = "$it°"
+        }
+
+    Regex(
+        """Direction\s*\(lon\./lat\.\):\s*(-?\d+(?:\.\d+)?)\s*/\s*(-?\d+(?:\.\d+)?)"""
+    )
+        .find(body)
+        ?.let {
+            result["longitude"] = it.groupValues[1]
+            result["latitude"] = it.groupValues[2]
+        }
+
+    Regex("""Start time of the event:\s*([^\s]+)""")
+        .find(body)
+        ?.groupValues
+        ?.getOrNull(1)
+        ?.let {
+            result["startTime"] = it
+        }
+
+    Regex("""Activity ID:\s*([^\s]+)""")
+        .find(body)
+        ?.groupValues
+        ?.getOrNull(1)
+        ?.let {
+            result["activityId"] = it
+        }
+
+    return result
+}

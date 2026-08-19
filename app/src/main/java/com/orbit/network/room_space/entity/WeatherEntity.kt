@@ -7,6 +7,10 @@ import androidx.room.PrimaryKey
 data class WeatherEntity(
 
     @PrimaryKey
-    val messageId: String,
+    val messageID: String,
+    val messageType: String,
+    val messageURL: String,
+    val messageIssueTime: String,
+    val messageBody: String
 
 )

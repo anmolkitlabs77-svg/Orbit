@@ -13,7 +13,7 @@ import com.orbit.network.room_space.entity.WeatherEntity
 
 @Database(
     entities = [ApodEntity::class, NeosEntity::class, EventEntity::class, WeatherEntity::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class SpaceDatabase : RoomDatabase() {

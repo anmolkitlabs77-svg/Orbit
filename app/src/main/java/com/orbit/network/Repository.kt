@@ -110,13 +110,18 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
         val response = apiSpace.getWeather(spaceToken)
 
         if(response.isSuccessful && response.body() != null){
-            Log.d("Iddddddddddddd",response.body()?.get(0)?.messageId ?: "dfd")
 
             response.body()?.forEach {it->
+                Log.d("Iddddddddddddd","${it.messageId}")
 
                 weatherDao.insert(
+
                     WeatherEntity(
-                        messageId = it.messageId
+                        messageID = it.messageId,
+                        messageType = it.messageType,
+                        messageURL = it.messageUrl,
+                        messageIssueTime = it.messageIssueTime,
+                        messageBody = it.messageBody,
                     )
                 )
             }
