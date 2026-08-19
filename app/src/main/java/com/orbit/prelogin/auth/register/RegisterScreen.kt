@@ -78,10 +78,8 @@ fun RegisterScreen(navController: NavHostController) {
 
             if (message == "SignUp successful!") {
 
-                App.sharedPref.putBoolean(
-                    Cons.IS_USER_LOGGEDIN,
-                    true
-                )
+                App.sharedPref.putBoolean(Cons.IS_GUEST,false)
+                App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
 
                 navController.navigate(Cons.MAINSCREEN) {
                     popUpTo(Cons.LOGIN) {

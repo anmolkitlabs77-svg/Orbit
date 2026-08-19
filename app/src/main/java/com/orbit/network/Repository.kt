@@ -9,6 +9,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
 import com.google.gson.Gson
+import com.orbit.dashboard.base.App
 import com.orbit.prelogin.auth.login.model.LoginStartRequest
 import com.orbit.prelogin.auth.login.model.LoginVerifyRequest
 import com.orbit.prelogin.auth.login.model.LoginVerifyResponse
@@ -21,6 +22,7 @@ import com.orbit.network.room_space.entity.EventEntity
 import com.orbit.network.room_space.entity.NeosEntity
 import com.orbit.network.room_space.entity.WeatherEntity
 import com.orbit.other.Cons
+import com.orbit.other.SharedPref
 import com.orbit.other.helper.formatKilometers
 import com.orbit.other.helper.formatMeters
 import com.orbit.other.helper.toFormattedVelocity
@@ -35,9 +37,10 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     val apiSpace : RetrofitApi = RetrofitClient.getSpaceRetrofit().create(RetrofitApi::class.java)
     val apiSpace2 : RetrofitApi = RetrofitClient.getSpaceRetrofit2().create(RetrofitApi::class.java)
     val apiAuth : RetrofitApi = RetrofitClient.getAuth().create(RetrofitApi::class.java)
+    val spaceToken = App.sharedPref.getString(Cons.SPACE_TOKEN,Cons.spaceToken)
     suspend fun syncSpaceData(start_date: String, end_date: String) {
 
-        val response = apiSpace.getPicByDay(Cons.spaceToken, start_date, end_date)
+        val response = apiSpace.getPicByDay(spaceToken, start_date, end_date)
         if(response.body() != null && response.body()?.size != 0) {
             response.body()?.forEach {
                 spaceDao.insert(
@@ -55,7 +58,7 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     fun getSpaceData() = spaceDao.getAllApods()
     suspend fun getNeoByDays(today: String) {
 
-        val response = apiSpace.getNeoByDay(Cons.spaceToken, today)
+        val response = apiSpace.getNeoByDay(spaceToken, today)
 
         if(response.isSuccessful && response.body() != null){
 
@@ -104,7 +107,7 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     fun getEvents() = eventDao.getAllEvents()
 
     suspend fun weather(){
-        val response = apiSpace.getWeather(Cons.spaceToken)
+        val response = apiSpace.getWeather(spaceToken)
 
         if(response.isSuccessful && response.body() != null){
             Log.d("Iddddddddddddd",response.body()?.get(0)?.messageId ?: "dfd")
