@@ -12,6 +12,7 @@ class Cons {
         const val PRIVACY_POLICY_URL = "https://anmolkitlabs77-svg.github.io/privacy_policy/"
         const val TERMS_CONDITION_URL = "https://anmolkitlabs77-svg.github.io/terms_condition/"
         const val NASA_GOV = "https://api.nasa.gov/"
+        const val AI_BASE_URL = "https://generativelanguage.googleapis.com/"
 
         //Routes
         const val SPLASH = "splash"

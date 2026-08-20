@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.orbit.aiNotifications.AiNotificationWorker
 import com.orbit.dashboard.apod.Apod
 import com.orbit.dashboard.events.Events
 import com.orbit.dashboard.neos.Neos
@@ -93,6 +95,7 @@ val items = listOf(
 @Composable
 fun Home(navController: NavHostController) {
 
+    val context = LocalContext.current
     val navController1 = rememberNavController()
     val navBackStackEntry by navController1.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -105,6 +108,7 @@ fun Home(navController: NavHostController) {
         permissions = listOf(Manifest.permission.POST_NOTIFICATIONS)
     ) { result ->
         if (result.granted) {
+            AiNotificationWorker.start(context)
             Log.d("Permission","Permission is granted")
         }
         else if(result.permanentlyDenied){
