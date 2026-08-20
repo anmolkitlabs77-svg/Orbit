@@ -203,114 +203,98 @@ fun SolarSystem() {
             .fillMaxSize()
             .background(Color(0xFF020209))
     ) {
-        Canvas(
-            Modifier
-                .fillMaxSize()
-                .onSizeChanged { cw = it.width.toFloat(); ch = it.height.toFloat() }
-        ) {
-            frame.hashCode()
-            if (cw == 0f) return@Canvas
 
-            val cx     = cw / 2f
-            val cy     = ch / 2f
-            val scale  = minOf(cw, ch) / 2f * 0.93f
-            val minDim = minOf(cw, ch)
 
-            // ── 1. Starfield ─────────────────────────────────────────────────
-            stars.forEach { drawCircle(Color.White.copy(alpha = it.a), it.r, Offset(it.x, it.y)) }
+            Canvas(
+                Modifier
+                    .fillMaxSize()
+                    .onSizeChanged { cw = it.width.toFloat(); ch = it.height.toFloat() }
+            ) {
+                frame.hashCode()
+                if (cw == 0f) return@Canvas
 
-            // ── 2. Orbit paths ───────────────────────────────────────────────
-            planets.forEach { p ->
-                val a = p.def.orbitFrac * scale
-                val b = a * sqrt(1f - p.def.ecc * p.def.ecc)
-                drawOval(
-                    color   = Color.White.copy(alpha = 0.07f),
-                    topLeft = Offset(cx - a, cy - b),
-                    size    = Size(a * 2f, b * 2f),
-                    style   = Stroke(0.7f),
-                )
-            }
+                val cx = cw / 2f
+                val cy = ch / 2f
+                val scale = minOf(cw, ch) / 2f * 0.93f
+                val minDim = minOf(cw, ch)
 
-            // ── 3. Sun (drawn before planets so they orbit over the corona) ──
-            val sunC = Offset(cx, cy)
-            val sunR = minDim * 0.050f * sunPulse
-            drawCircle(Color(0xFFFF7700).copy(alpha = 0.03f), sunR * 11f, sunC)
-            drawCircle(Color(0xFFFFAA00).copy(alpha = 0.06f), sunR * 7.5f, sunC)
-            drawCircle(Color(0xFFFFCC00).copy(alpha = 0.12f), sunR * 4.5f, sunC)
-            drawCircle(Color(0xFFFFDD44).copy(alpha = 0.24f), sunR * 2.6f, sunC)
-            drawCircle(Color(0xFFFFEE88),                     sunR,        sunC)
-            drawCircle(Color.White.copy(alpha = 0.92f),        sunR * 0.35f, sunC)
-
-            // ── 4. Trails ────────────────────────────────────────────────────
-            planets.forEach { p ->
-                val r = p.def.bodyRFrac * minDim
-                p.trail.forEachIndexed { i, pos ->
-                    val frac = 1f - i.toFloat() / p.trail.size
-                    drawCircle(p.def.color.copy(alpha = frac * 0.28f), r * frac * 0.70f, pos)
-                }
-            }
-
-            // ── 5. Per-planet: back ring → body → front ring → moon → label ─
-            planets.forEachIndexed { idx, p ->
-                val pos = p.pos(cx, cy, scale)
-                val r   = p.def.bodyRFrac * minDim
-
-                // Saturn back-half rings appear behind the planet disc
-                if (p.def.hasRings) drawSaturnRings(pos, r, front = false)
-
-                drawPlanetBody(p, pos, minDim)
-
-                // Saturn front-half rings appear in front of the planet disc
-                if (p.def.hasRings) drawSaturnRings(pos, r, front = true)
-
-                // Earth's moon
-                if (p.def.moonOrbitFrac > 0f) {
-                    val mp = p.moonPos(cx, cy, scale)
-                    val mr = r * 0.38f
-                    drawCircle(Color(0xFFCCCCCC).copy(alpha = 0.06f), mr * 4.5f, mp)
-                    drawCircle(Color(0xFFCCCCCC), mr, mp)
-                    drawCircle(Color.White.copy(alpha = 0.45f), mr * 0.34f,
-                        Offset(mp.x - mr * 0.22f, mp.y - mr * 0.22f))
+                // ── 1. Starfield ─────────────────────────────────────────────────
+                stars.forEach {
+                    drawCircle(
+                        Color.White.copy(alpha = it.a),
+                        it.r,
+                        Offset(it.x, it.y)
+                    )
                 }
 
-                // Planet name label — positioned above the body
-                val layout = labelLayouts[idx]
-                drawText(
-                    textLayoutResult = layout,
-                    color            = p.def.color.copy(alpha = 0.72f),
-                    topLeft          = Offset(
-                        pos.x - layout.size.width / 2f,
-                        pos.y - r - 16f,
-                    ),
-                )
-            }
-        }
+                // ── 2. Orbit paths ───────────────────────────────────────────────
+                planets.forEach { p ->
+                    val a = p.def.orbitFrac * scale
+                    val b = a * sqrt(1f - p.def.ecc * p.def.ecc)
+                    drawOval(
+                        color = Color.White.copy(alpha = 0.07f),
+                        topLeft = Offset(cx - a, cy - b),
+                        size = Size(a * 2f, b * 2f),
+                        style = Stroke(0.7f),
+                    )
+                }
 
-        // ── HUD ──────────────────────────────────────────────────────────────
-        Column(
-            modifier              = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .padding(top = 56.dp),
-            horizontalAlignment   = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text          = "SOLAR  SYSTEM",
-                color         = Color(0xFFFFCC44),
-                fontSize      = 20.sp,
-                fontWeight    = FontWeight.Black,
-                fontFamily    = FontFamily.Monospace,
-                letterSpacing = 5.sp,
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text          = "Keplerian orbits  ·  Jetpack Compose",
-                color         = Color(0xFF3D4B60),
-                fontSize      = 10.sp,
-                fontFamily    = FontFamily.Monospace,
-                letterSpacing = 1.sp,
-            )
-        }
+                // ── 3. Sun (drawn before planets so they orbit over the corona) ──
+                val sunC = Offset(cx, cy)
+                val sunR = minDim * 0.050f * sunPulse
+                drawCircle(Color(0xFFFF7700).copy(alpha = 0.03f), sunR * 11f, sunC)
+                drawCircle(Color(0xFFFFAA00).copy(alpha = 0.06f), sunR * 7.5f, sunC)
+                drawCircle(Color(0xFFFFCC00).copy(alpha = 0.12f), sunR * 4.5f, sunC)
+                drawCircle(Color(0xFFFFDD44).copy(alpha = 0.24f), sunR * 2.6f, sunC)
+                drawCircle(Color(0xFFFFEE88), sunR, sunC)
+                drawCircle(Color.White.copy(alpha = 0.92f), sunR * 0.35f, sunC)
+
+                // ── 4. Trails ────────────────────────────────────────────────────
+                planets.forEach { p ->
+                    val r = p.def.bodyRFrac * minDim
+                    p.trail.forEachIndexed { i, pos ->
+                        val frac = 1f - i.toFloat() / p.trail.size
+                        drawCircle(p.def.color.copy(alpha = frac * 0.28f), r * frac * 0.70f, pos)
+                    }
+                }
+
+                // ── 5. Per-planet: back ring → body → front ring → moon → label ─
+                planets.forEachIndexed { idx, p ->
+                    val pos = p.pos(cx, cy, scale)
+                    val r = p.def.bodyRFrac * minDim
+
+                    // Saturn back-half rings appear behind the planet disc
+                    if (p.def.hasRings) drawSaturnRings(pos, r, front = false)
+
+                    drawPlanetBody(p, pos, minDim)
+
+                    // Saturn front-half rings appear in front of the planet disc
+                    if (p.def.hasRings) drawSaturnRings(pos, r, front = true)
+
+                    // Earth's moon
+                    if (p.def.moonOrbitFrac > 0f) {
+                        val mp = p.moonPos(cx, cy, scale)
+                        val mr = r * 0.38f
+                        drawCircle(Color(0xFFCCCCCC).copy(alpha = 0.06f), mr * 4.5f, mp)
+                        drawCircle(Color(0xFFCCCCCC), mr, mp)
+                        drawCircle(
+                            Color.White.copy(alpha = 0.45f), mr * 0.34f,
+                            Offset(mp.x - mr * 0.22f, mp.y - mr * 0.22f)
+                        )
+                    }
+
+                    // Planet name label — positioned above the body
+                    val layout = labelLayouts[idx]
+                    drawText(
+                        textLayoutResult = layout,
+                        color = p.def.color.copy(alpha = 0.72f),
+                        topLeft = Offset(
+                            pos.x - layout.size.width / 2f,
+                            pos.y - r - 16f,
+                        ),
+                    )
+                }
+            }
 
     }
 }

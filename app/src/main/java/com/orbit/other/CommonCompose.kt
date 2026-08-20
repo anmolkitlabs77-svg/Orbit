@@ -233,7 +233,15 @@ fun cyanVioletGradient(): Brush {
         )
     )
 }
-
+@Composable
+fun GradientColor(): Brush {
+    return Brush.linearGradient(
+        colors = listOf(
+            colorResource( R.color.cyan),
+            colorResource(R.color.violet)
+        )
+    )
+}
 @Composable
 fun GradientButton( text: String, onClick: () -> Unit, enabled: Boolean = true) {
     Box(

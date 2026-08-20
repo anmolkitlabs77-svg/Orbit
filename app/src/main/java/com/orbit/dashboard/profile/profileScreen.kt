@@ -9,20 +9,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -36,8 +43,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -47,6 +56,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,6 +69,7 @@ import com.orbit.other.CommonText
 import com.orbit.other.Cons
 import com.orbit.other.CustomDialog
 import com.orbit.other.GradientButton
+import com.orbit.other.GradientColor
 import com.orbit.other.StarsBackground
 import com.orbit.other.fieldText
 
@@ -192,6 +203,20 @@ fun Profile(navController: NavHostController) {
                 )
             }
 
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                fieldText("PLAY & EXPLORE", modifer = Modifier.padding(top = 20.dp))
+            }
+
+            navTile("SOLAR SYSTEM","Explore planets in orbit",{navController.navigate(Cons.SOLAR)})
+            Spacer(modifier = Modifier.height(10.dp))
+            navTile("SOLAR ECLIPSE","Watch the moon cross the sun",{navController.navigate(Cons.SOLAR2)})
+            Spacer(modifier = Modifier.height(10.dp))
+            navTile("GRAVITY NEBULA","A swirling field of stardust",{navController.navigate(Cons.SOLAR3)})
+
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Start
@@ -206,7 +231,7 @@ fun Profile(navController: NavHostController) {
                     .padding(vertical = 10.dp)
                     .clip(RoundedCornerShape(14.dp))
                     .border(
-                        2.dp,
+                        1.dp,
                         color = colorResource(R.color.app_blue),
                         shape = RoundedCornerShape(14.dp)
                     )
@@ -343,79 +368,12 @@ fun Profile(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
             ) {
-                fieldText("FOLLOW ORBIT")
+                fieldText("FOLLOW US")
             }
 
-
-            Row(
-                modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
-            ){
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .clickable{
-                            navController.navigate(Cons.SOLAR)
-                        }
-                        .background(
-                            Brush.verticalGradient(listOf(colorResource(R.color.thumb1), colorResource(R.color.thumb2)))
-                        )
-                        .border(1.dp,
-                            color = colorResource(R.color.app_blue),
-                            RoundedCornerShape(14.dp))
-                ){
-                    Icon(
-                        modifier = Modifier.padding(5.dp)
-                        .size(50.dp),
-                    painter = painterResource(R.drawable.ic_github),
-                        contentDescription = "github",
-                        tint = Color.Unspecified)
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .clickable{
-                            navController.navigate(Cons.SOLAR2)
-                        }
-                        .size(56.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(
-                            Brush.verticalGradient(listOf(colorResource(R.color.thumb1), colorResource(R.color.thumb2)))
-                        )
-                        .border(1.dp,
-                            color = colorResource(R.color.app_blue),
-                            RoundedCornerShape(14.dp))
-                ){
-                    Icon(
-                        modifier = Modifier.padding(5.dp)
-                            .size(50.dp),
-                        painter = painterResource(R.drawable.ic_insta),
-                        contentDescription = "github",
-                        tint = Color.Unspecified)
-                }
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clickable{
-                            navController.navigate(Cons.SOLAR3)
-                        }
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(
-                            Brush.verticalGradient(listOf(colorResource(R.color.thumb1), colorResource(R.color.thumb2)))
-                        )
-                        .border(1.dp,
-                            color = colorResource(R.color.app_blue),
-                            RoundedCornerShape(14.dp))
-                ){
-                    Icon(
-                        modifier = Modifier.padding(5.dp)
-                            .size(50.dp),
-                        painter = painterResource(R.drawable.ic_linkedin),
-                        contentDescription = "github",
-                        tint = Color.Unspecified)
-                }
-            }
-
+            navTile("Github","Follow on GitHub") {}
+            Spacer(modifier = Modifier.height(10.dp))
+            navTile("LinkedIn","Follow on linkedin") {}
 
             if(!isGuest) {
                 Box(
@@ -495,3 +453,60 @@ fun Profile(navController: NavHostController) {
     }
 }
 
+@Composable
+fun navTile(title: String, subTitle: String, onClick :()->Unit){
+    Box(
+        modifier = Modifier.fillMaxWidth()
+            .clickable{
+                onClick()
+            }
+            .clip(RoundedCornerShape(14.dp))
+            .border(1.dp,
+                color = colorResource(R.color.app_blue),
+                shape = RoundedCornerShape(14.dp))
+            .padding(10.dp)
+    ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .align(Alignment.Center),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                Modifier
+                    .fillMaxHeight()
+                    .width(1.dp)
+                    .background(GradientColor()))
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .weight(1f)
+
+            ) {
+                Text(title,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    style = LocalTextStyle.current.copy(
+                        lineHeight = 16.sp,
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.Both
+                        )
+                    ))
+
+                Text(subTitle,
+                    color = colorResource(R.color.dim),
+                    fontSize = 14.sp)
+
+
+            }
+
+            Icon(painter = painterResource(R.drawable.ic_arrow),
+                contentDescription = "onClick",
+                tint = Color.Unspecified)
+
+        }
+    }
+}
