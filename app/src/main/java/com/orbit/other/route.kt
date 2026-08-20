@@ -10,7 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.orbit.SplashScreen
+import com.orbit.dashboard.GravityNebula
 import com.orbit.dashboard.Home
+import com.orbit.dashboard.SolarEclipse
+import com.orbit.dashboard.SolarSystem
 import com.orbit.dashboard.webview.WebView
 import com.orbit.prelogin.onboarding.OnboardingScreen
 import com.orbitwatch.ui.auth.LoginScreen
@@ -59,6 +62,9 @@ fun AppNavigation() {
         composable(Cons.LOGIN) {LoginScreen(navController)}
         composable(Cons.REGISTER) { RegisterScreen(navController) }
         composable(Cons.MAINSCREEN) {Home(navController)}
+        composable(Cons.SOLAR) { SolarSystem() }
+        composable(Cons.SOLAR2) { SolarEclipse() }
+        composable(Cons.SOLAR3) { GravityNebula() }
         composable(
             route = Cons.WEBVIEW) { backStackEntry ->
 

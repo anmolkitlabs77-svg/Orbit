@@ -354,6 +354,9 @@ fun Profile(navController: NavHostController) {
                     modifier = Modifier
                         .size(56.dp)
                         .clip(RoundedCornerShape(14.dp))
+                        .clickable{
+                            navController.navigate(Cons.SOLAR)
+                        }
                         .background(
                             Brush.verticalGradient(listOf(colorResource(R.color.thumb1), colorResource(R.color.thumb2)))
                         )
@@ -371,6 +374,9 @@ fun Profile(navController: NavHostController) {
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
+                        .clickable{
+                            navController.navigate(Cons.SOLAR2)
+                        }
                         .size(56.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(
@@ -390,6 +396,9 @@ fun Profile(navController: NavHostController) {
                 Box(
                     modifier = Modifier
                         .size(56.dp)
+                        .clickable{
+                            navController.navigate(Cons.SOLAR3)
+                        }
                         .clip(RoundedCornerShape(14.dp))
                         .background(
                             Brush.verticalGradient(listOf(colorResource(R.color.thumb1), colorResource(R.color.thumb2)))
@@ -473,7 +482,10 @@ fun Profile(navController: NavHostController) {
                 )
             }
             CommonText(
-                modifier = Modifier.padding(bottom = 10.dp),
+                modifier = Modifier.padding(bottom = 10.dp)
+                    .clickable{
+                        navController.navigate(Cons.SOLAR)
+                    },
                 name = "Version 1.0",
                 fontSize = 13.sp,
                 color = colorResource(R.color.dim))

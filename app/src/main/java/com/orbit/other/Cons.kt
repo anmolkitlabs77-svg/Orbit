@@ -19,6 +19,9 @@ class Cons {
         const val LOGIN = "login"
         const val REGISTER = "register"
         const val MAINSCREEN = "mainScreen"
+        const val SOLAR = "solar"
+        const val SOLAR2 = "solar2"
+        const val SOLAR3 = "solar3"
         const val WEBVIEW = "webView/{link}/{title}"
 
         //Values
