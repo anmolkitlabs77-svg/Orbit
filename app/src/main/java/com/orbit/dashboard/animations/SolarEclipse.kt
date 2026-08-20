@@ -1,4 +1,4 @@
-package com.orbit.dashboard
+package com.orbit.dashboard.animations
 
 
 import androidx.compose.foundation.Canvas
@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import kotlin.math.*
 import kotlin.random.Random

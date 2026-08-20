@@ -10,10 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.orbit.SplashScreen
-import com.orbit.dashboard.GravityNebula
+import com.orbit.dashboard.animations.GravityNebula
 import com.orbit.dashboard.Home
-import com.orbit.dashboard.SolarEclipse
-import com.orbit.dashboard.SolarSystem
+import com.orbit.dashboard.animations.SolarEclipse
+import com.orbit.dashboard.animations.SolarSystem
 import com.orbit.dashboard.webview.WebView
 import com.orbit.prelogin.onboarding.OnboardingScreen
 import com.orbitwatch.ui.auth.LoginScreen

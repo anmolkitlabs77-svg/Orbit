@@ -1,4 +1,4 @@
-package com.orbit.dashboard
+package com.orbit.dashboard.animations
 //SolarEclipse
 
 import androidx.compose.animation.core.*
@@ -17,8 +17,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import kotlin.math.*
 import kotlin.random.Random

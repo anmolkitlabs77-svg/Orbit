@@ -1,4 +1,4 @@
-package com.orbit.dashboard
+package com.orbit.dashboard.animations
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
