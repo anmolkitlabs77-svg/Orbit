@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.util.CoilUtils.result
+import com.orbit.dashboard.base.App
 import com.orbit.prelogin.auth.login.model.LoginVerifyResponse
 import com.orbit.network.NetworkResult
 import com.orbit.network.Repository
+import com.orbit.other.Cons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -55,6 +57,8 @@ class loginVM @Inject constructor(val repository: Repository) : ViewModel() {
         if (result is NetworkResult.Success) {
             _displayLoader.value = false
             _loginEvent.emit("Login successful!")
+            result.data?.email?.let { App.sharedPref.putString(Cons.EMAIL,it) }
+            result.data?.name?.let { App.sharedPref.putString(Cons.NAME,it) }
         }
     }
 

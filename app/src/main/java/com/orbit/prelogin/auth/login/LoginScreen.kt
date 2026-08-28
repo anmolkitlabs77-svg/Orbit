@@ -80,8 +80,9 @@ fun LoginScreen(navController: NavHostController) {
                 App.sharedPref.putBoolean(Cons.IS_GUEST,false)
 
 
+
                 navController.navigate(Cons.MAINSCREEN) {
-                    popUpTo(Cons.LOGIN) {
+                    popUpTo(0) {
                         inclusive = true
                     }
                 }
@@ -182,7 +183,7 @@ fun LoginScreen(navController: NavHostController) {
                         App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
                         App.sharedPref.putBoolean(Cons.IS_GUEST,true)
                         navController.navigate(Cons.MAINSCREEN){
-                            popUpTo(Cons.LOGIN){
+                            popUpTo(0){
                                 inclusive = true
                             }
                         }
@@ -207,7 +208,11 @@ fun LoginScreen(navController: NavHostController) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 CommonText(name = "Don't have an account?", color = colorResource(R.color.dim), fontSize = 12.5.sp)
                 TextButton(onClick = {
-                    navController.navigate(Cons.REGISTER)
+                    navController.navigate(Cons.REGISTER){
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                    }
                 }) {
                     CommonText(name = "Create one", color = colorResource(R.color.cyan), fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold)
                 }

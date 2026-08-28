@@ -14,6 +14,10 @@ class Cons {
         const val NASA_GOV = "https://api.nasa.gov/"
         const val AI_BASE_URL = "https://generativelanguage.googleapis.com/"
 
+        const val LINKEDIN_WEB = "https://www.linkedin.com/in/anmol-verma-0846b8225"
+        const val LINKEDIN_APP = "linkedin://in/anmol-verma-0846b8225"
+        const val GITHUB_WEB = "https://github.com/anmolvermaa"
+
         //Routes
         const val SPLASH = "splash"
         const val ONBOARDING = "onboarding"

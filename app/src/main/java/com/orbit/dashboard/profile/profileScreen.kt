@@ -1,8 +1,10 @@
 package com.orbit.dashboard.profile
 
-import android.app.AlertDialog
-import android.app.Dialog
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,22 +22,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,11 +41,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -60,8 +56,8 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import com.orbit.R
 import com.orbit.dashboard.base.App
 import com.orbit.other.BlurEffect
@@ -76,15 +72,61 @@ import com.orbit.other.fieldText
 @Composable
 fun Profile(navController: NavHostController) {
 
+    val activity = LocalActivity.current
+
+    val viewModel : profileVM = hiltViewModel()
+    val loader = viewModel.displayLoader.observeAsState()
+
+    val context = LocalContext.current
     var isGuest by rememberSaveable {mutableStateOf(App.sharedPref.getBoolean(Cons.IS_GUEST, false)) }
 
     var text by rememberSaveable {mutableStateOf(App.sharedPref.getString(Cons.SPACE_TOKEN, "")) }
+    val name by rememberSaveable {mutableStateOf(App.sharedPref.getString(Cons.NAME,"")) }
+    val email by rememberSaveable {mutableStateOf(App.sharedPref.getString(Cons.EMAIL,"")) }
+
     var showdialog by rememberSaveable {mutableStateOf(false) }
-    var showdialog2 by rememberSaveable {mutableStateOf(false) }
+    var dialogTitle by rememberSaveable {mutableStateOf("")}
+    var dialogMessage by rememberSaveable {mutableStateOf("") }
+    var dialogYes by rememberSaveable {mutableStateOf("")  }
+    var dialogNo by rememberSaveable {mutableStateOf("")  }
+
+     fun clearDialog(){
+        showdialog = false
+         dialogTitle = ""
+         dialogMessage = ""
+         dialogYes = ""
+         dialogNo = ""
+    }
 
     var edit by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+
+
+    LaunchedEffect(Unit) {
+
+        viewModel.deleteEvent.collect { message ->
+
+            Toast.makeText(
+                activity,
+                message,
+                Toast.LENGTH_SHORT
+            ).show()
+
+
+            if (message == "Account Successfully delected") {
+
+
+
+
+                navController.navigate(Cons.MAINSCREEN) {
+                    popUpTo(0) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -98,45 +140,41 @@ fun Profile(navController: NavHostController) {
                 .verticalScroll(scrollState)
 
         ){
-            if(showdialog2){
+            if(showdialog){
                     CustomDialog(
-                        showDialog = showdialog2,
-                        title = "LogOut",
-                        message = "Are you sure you want to logout from your account?",
-                        yesText = "Yes",
-                        noText = "No",
-                        onDismiss = {
-                            showdialog2 = false
-
-
-                        },
+                        showDialog = showdialog,
+                        title = dialogTitle,
+                        message = dialogMessage,
+                        yesText = dialogYes,
+                        noText = dialogNo,
+                        onDismiss = {clearDialog()},
                         onDelete = {
-                            showdialog2 = false
-                            App.sharedPref.clearAll()
-                            App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE, true)
-                            navController.navigate(Cons.LOGIN) {
-                                popUpTo(Cons.MAINSCREEN) {
-                                    inclusive = true
+                            if(dialogTitle == "Log Out"){
+                                App.sharedPref.clearAll()
+                                App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE, true)
+                                navController.navigate(Cons.LOGIN) {
+                                    popUpTo(Cons.MAINSCREEN) {
+                                        inclusive = true
+                                    }
                                 }
                             }
+                            else if(dialogTitle == "Delete Account") {
+
+                                viewModel.deleteAccount(email)
+                                App.sharedPref.clearAll()
+                                App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE, true)
+                                navController.navigate(Cons.LOGIN) {
+                                    popUpTo(Cons.MAINSCREEN) {
+                                        inclusive = true
+                                    }
+                                }
+
+                            }
+                            clearDialog()
+
                         },
                     )
             }
-
-            if(showdialog){
-                CustomDialog(
-                    showDialog = showdialog,
-                    title = "Missing API Key",
-                    message = "Please provide an API key before continuing.",
-                    yesText = "Ok",
-                    noText = "",
-                    onDismiss = {},
-                    onDelete = {
-                        showdialog = false
-                    },
-                )
-            }
-
 
                 Icon(
                     modifier = Modifier
@@ -144,21 +182,20 @@ fun Profile(navController: NavHostController) {
                         .size(100.dp),
                     painter = painterResource(R.drawable.logo,),
                     contentDescription = "logo",
-                    tint = Color.Unspecified
-                    )
+                    tint = Color.Unspecified)
 
 
             if(!isGuest) {
                 CommonText(
                     modifier = Modifier.padding(top = 10.dp),
-                    name = "Test User",
+                    name = name,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
 
                 CommonText(
-                    name = "anmol@yopmail.com",
+                    name = email,
                     color = colorResource(R.color.text_color2),
                     fontSize = 15.sp
                 )
@@ -290,6 +327,11 @@ fun Profile(navController: NavHostController) {
                                     modifier = Modifier.clickable{
                                         if(text.isNullOrEmpty()){
                                             showdialog = true
+                                            dialogTitle = "Missing Api key"
+                                            dialogMessage = "please provide an Api key before continuing"
+                                            dialogNo = ""
+                                            dialogYes = "Ok"
+
                                             return@clickable
                                         }
                                         edit = false
@@ -371,15 +413,21 @@ fun Profile(navController: NavHostController) {
                 fieldText("FOLLOW US")
             }
 
-            navTile("Github","Follow on GitHub") {}
+            navTile("Github","Follow on GitHub") { openGithub(context) }
             Spacer(modifier = Modifier.height(10.dp))
-            navTile("LinkedIn","Follow on linkedin") {}
+            navTile("LinkedIn","Follow on linkedin") {openLinkedIn(context)}
 
             if(!isGuest) {
                 Box(
                     modifier = Modifier
                         .clickable{
-                          showdialog2 = true
+
+                          showdialog = true
+                          dialogTitle = "Log Out"
+                          dialogMessage = "are you sure you want to logout from your account ?"
+                          dialogNo = "No"
+                          dialogYes = "Yes"
+
                         }
                         .padding(10.dp)
                         .fillMaxWidth()
@@ -397,8 +445,22 @@ fun Profile(navController: NavHostController) {
                         modifier = Modifier.padding(vertical = 10.dp),
                         name = "Log Out",
                         color = colorResource(R.color.red)
-                    )
-                }
+                    )}
+
+                CommonText(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .clickable{
+                            showdialog = true
+                            dialogTitle = "Delete Account"
+                            dialogMessage = "are you sure you want to delete your account ?"
+                            dialogNo = "No"
+                            dialogYes = "Yes"
+
+                    },
+                    name = "Delete Account",
+                    fontSize = 13.sp,
+                    color = colorResource(R.color.red))
             }
 
             Box(
@@ -508,5 +570,42 @@ fun navTile(title: String, subTitle: String, onClick :()->Unit){
                 tint = Color.Unspecified)
 
         }
+    }
+}
+
+fun openGithub(context: Context) {
+    try {
+
+    val intent = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse(Cons.GITHUB_WEB)
+    )
+    context.startActivity(intent)
+}
+catch (e: Exception){
+    e.printStackTrace()
+    Toast.makeText(context,"Try again later", Toast.LENGTH_SHORT).show()
+}
+}
+fun openLinkedIn(context: Context,) {
+
+    val linkedInAppIntent = Intent(Intent.ACTION_VIEW,Uri.parse(Cons.LINKEDIN_APP))
+
+    try {
+
+        if (linkedInAppIntent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(linkedInAppIntent)
+        } else {
+            val webIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(Cons.LINKEDIN_WEB)
+            )
+
+            context.startActivity(webIntent)
+        }
+    }
+    catch (e: Exception){
+        e.printStackTrace()
+        Toast.makeText(context,"Try again later", Toast.LENGTH_SHORT).show()
     }
 }

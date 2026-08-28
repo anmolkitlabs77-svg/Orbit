@@ -1,5 +1,6 @@
 package com.orbit.network
 
+import androidx.room.Delete
 import com.orbit.dashboard.apod.model.picdayModel
 import com.orbit.dashboard.events.model.Events
 import com.orbit.dashboard.neos.model.neosModel
@@ -59,6 +60,11 @@ interface RetrofitApi {
     suspend fun loginVerify(
         @Body request: LoginVerifyRequest
     ): Response<LoginVerifyResponse>
+
+    @DELETE("passkey/account")
+    suspend fun deleteAccount(
+        @Query("email") email: String
+    ) : Response<LoginVerifyResponse>
 
 }
 

@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.orbit.dashboard.base.App
 import com.orbit.prelogin.auth.login.model.LoginVerifyResponse
 import com.orbit.network.NetworkResult
 import com.orbit.network.Repository
+import com.orbit.other.Cons
 import com.orbit.prelogin.auth.register.model.RegisterRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -60,6 +62,8 @@ class registerVM @Inject constructor(val repository: Repository) : ViewModel() {
         if (result is NetworkResult.Success) {
             _displayLoader.value = false
             _registerEvent.emit("SignUp successful!")
+            result.data?.name?.let { App.sharedPref.putString(Cons.NAME,it) }
+            result.data?.email?.let { App.sharedPref.putString(Cons.EMAIL,it) }
         }
 
     }

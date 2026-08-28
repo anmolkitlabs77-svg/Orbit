@@ -82,7 +82,7 @@ fun RegisterScreen(navController: NavHostController) {
                 App.sharedPref.putBoolean(Cons.IS_USER_LOGGEDIN,true)
 
                 navController.navigate(Cons.MAINSCREEN) {
-                    popUpTo(Cons.LOGIN) {
+                    popUpTo(0) {
                         inclusive = true
                     }
                 }
@@ -195,7 +195,7 @@ fun RegisterScreen(navController: NavHostController) {
                 CommonText("Already have an account?", color = colorResource(R.color.text_color2), fontSize = 12.5.sp)
                 TextButton(onClick = {
                     navController.navigate(Cons.LOGIN){
-                        popUpTo(Cons.LOGIN){
+                        popUpTo(0){
                             inclusive = true
                         }
                     }

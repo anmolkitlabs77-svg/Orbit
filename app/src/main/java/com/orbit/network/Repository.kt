@@ -34,14 +34,14 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
                                      val neosDao: NeosDao,
                                      val eventDao: EventDao,
                                      val weatherDao: WeatherDeo) {
-    val apiSpace : RetrofitApi = RetrofitClient.getSpaceRetrofit().create(RetrofitApi::class.java)
-    val apiSpace2 : RetrofitApi = RetrofitClient.getSpaceRetrofit2().create(RetrofitApi::class.java)
-    val apiAuth : RetrofitApi = RetrofitClient.getAuth().create(RetrofitApi::class.java)
-    val spaceToken = App.sharedPref.getString(Cons.SPACE_TOKEN,Cons.spaceToken)
+    val apiSpace: RetrofitApi = RetrofitClient.getSpaceRetrofit().create(RetrofitApi::class.java)
+    val apiSpace2: RetrofitApi = RetrofitClient.getSpaceRetrofit2().create(RetrofitApi::class.java)
+    val apiAuth: RetrofitApi = RetrofitClient.getAuth().create(RetrofitApi::class.java)
+    val spaceToken = App.sharedPref.getString(Cons.SPACE_TOKEN, Cons.spaceToken)
     suspend fun syncSpaceData(start_date: String, end_date: String) {
 
         val response = apiSpace.getPicByDay(spaceToken, start_date, end_date)
-        if(response.body() != null && response.body()?.size != 0) {
+        if (response.body() != null && response.body()?.size != 0) {
             response.body()?.forEach {
                 spaceDao.insert(
                     ApodEntity(
@@ -55,12 +55,13 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
             }
         }
     }
+
     fun getSpaceData() = spaceDao.getAllApods()
     suspend fun getNeoByDays(today: String) {
 
         val response = apiSpace.getNeoByDay(spaceToken, today)
 
-        if(response.isSuccessful && response.body() != null){
+        if (response.isSuccessful && response.body() != null) {
 
             response.body()?.near_earth_objects?.forEach { (date, list) ->
                 val dateTime = date
@@ -79,21 +80,28 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
                             status = Status,
                             distance = neo.close_approach_data.get(0).miss_distance.kilometers.formatKilometers(),
                             velocity = neo.close_approach_data.get(0).relative_velocity.kilometers_per_hour.toFormattedVelocity(),
-                            diameter = "${neo.estimated_diameter.kilometers.estimated_diameter_max.toString().formatMeters()} - ${neo.estimated_diameter.kilometers.estimated_diameter_min.toString().formatMeters()} ",
+                            diameter = "${
+                                neo.estimated_diameter.kilometers.estimated_diameter_max.toString()
+                                    .formatMeters()
+                            } - ${
+                                neo.estimated_diameter.kilometers.estimated_diameter_min.toString()
+                                    .formatMeters()
+                            } ",
                             approachDate = neo.close_approach_data.get(0).close_approach_date_full
                         )
                     )
-                    
-                    println("${neo.name} on $date") 
+
+                    println("${neo.name} on $date")
                 }
             }
         }
     }
+
     fun getNeos() = neosDao.getAllNeos()
-    suspend fun Events(days: String){
+    suspend fun Events(days: String) {
         val response = apiSpace2.getEvents(days)
 
-        if(response.isSuccessful && response.body() != null){
+        if (response.isSuccessful && response.body() != null) {
             response.body()?.events?.forEach {
 
                 eventDao.insert(
@@ -104,15 +112,16 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
             }
         }
     }
+
     fun getEvents() = eventDao.getAllEvents()
 
-    suspend fun weather(){
+    suspend fun weather() {
         val response = apiSpace.getWeather(spaceToken)
 
-        if(response.isSuccessful && response.body() != null){
+        if (response.isSuccessful && response.body() != null) {
 
-            response.body()?.forEach {it->
-                Log.d("Iddddddddddddd","${it.messageId}")
+            response.body()?.forEach { it ->
+                Log.d("Iddddddddddddd", "${it.messageId}")
 
                 weatherDao.insert(
 
@@ -125,14 +134,17 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
                     )
                 )
             }
-        }
-        else{
-            Log.d("Iddddddddddddd","error")
+        } else {
+            Log.d("Iddddddddddddd", "error")
         }
     }
+
     fun getWeather() = weatherDao.getAllWeather()
 
-    suspend fun register(activity: Activity, request: RegisterRequest): NetworkResult<LoginVerifyResponse>  {
+    suspend fun register(
+        activity: Activity,
+        request: RegisterRequest
+    ): NetworkResult<LoginVerifyResponse> {
 
         val response = try {
             NetworkResult.Success(apiAuth.register(request))
@@ -144,12 +156,16 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
         try {
             val credentialManager = CredentialManager.create(activity)
             val publicKeyJson = Gson().toJsonTree(response.data?.publicKey).asJsonObject
-            publicKeyJson.add("authenticatorSelection", Gson().toJsonTree(mapOf(
-                "authenticatorAttachment" to "platform",
-                "residentKey" to "required",
-                "requireResidentKey" to true,
-                "userVerification" to "required"
-            )))
+            publicKeyJson.add(
+                "authenticatorSelection", Gson().toJsonTree(
+                    mapOf(
+                        "authenticatorAttachment" to "platform",
+                        "residentKey" to "required",
+                        "requireResidentKey" to true,
+                        "userVerification" to "required"
+                    )
+                )
+            )
             val requestJsonString = publicKeyJson.toString()
 
             val createRequest = CreatePublicKeyCredentialRequest(
@@ -158,7 +174,8 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
 
             val credentialResponse = credentialManager.createCredential(
                 context = activity,
-                request = createRequest) as CreatePublicKeyCredentialResponse
+                request = createRequest
+            ) as CreatePublicKeyCredentialResponse
 
             val verifyResponse = apiAuth.registerVirfy(
                 RegisterVerifyRequest(
@@ -242,4 +259,24 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
             )
         }
     }
-}
+
+    suspend fun deleteAccount(
+        email: String,
+    ): NetworkResult<LoginVerifyResponse> {
+
+        return try {
+            val response = apiAuth.deleteAccount(email)
+            if (!response.isSuccessful || response.body() == null) {
+                NetworkResult.Error("Account deletion failed")
+            } else {
+                NetworkResult.Success(response.body()!!)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            NetworkResult.Error("Network error: ${e.message}")
+        }
+    }
+
+    }
+
+
