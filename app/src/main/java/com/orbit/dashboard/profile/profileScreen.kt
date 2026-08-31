@@ -116,7 +116,8 @@ fun Profile(navController: NavHostController) {
 
             if (message == "Account Successfully delected") {
 
-
+                App.sharedPref.clearAll()
+                App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE, true)
 
 
                 navController.navigate(Cons.MAINSCREEN) {
@@ -161,13 +162,12 @@ fun Profile(navController: NavHostController) {
                             else if(dialogTitle == "Delete Account") {
 
                                 viewModel.deleteAccount(email)
-                                App.sharedPref.clearAll()
-                                App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE, true)
-                                navController.navigate(Cons.LOGIN) {
-                                    popUpTo(Cons.MAINSCREEN) {
-                                        inclusive = true
-                                    }
-                                }
+
+//                                navController.navigate(Cons.LOGIN) {
+//                                    popUpTo(Cons.MAINSCREEN) {
+//                                        inclusive = true
+//                                    }
+//                                }
 
                             }
                             clearDialog()

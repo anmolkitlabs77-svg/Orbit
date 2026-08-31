@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.orbit.network.NetworkResult
 import com.orbit.network.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
