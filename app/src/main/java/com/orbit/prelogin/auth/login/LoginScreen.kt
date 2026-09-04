@@ -198,7 +198,7 @@ fun LoginScreen(navController: NavHostController) {
             ){
                 CommonText(
                     modifier = Modifier.padding(10.dp),
-                    name = "CONTINUE AS GUEST",
+                    name = "Continue as Guest",
                     fontSize = 14.sp,
                     color = Color.White,)
             }
@@ -206,16 +206,18 @@ fun LoginScreen(navController: NavHostController) {
             Spacer(Modifier.height(24.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                CommonText(name = "Don't have an account?", color = colorResource(R.color.dim), fontSize = 12.5.sp)
-                TextButton(onClick = {
-                    navController.navigate(Cons.REGISTER){
-                        popUpTo(0){
-                            inclusive = true
+                CommonText(name = "Don't have an account? ", color = colorResource(R.color.dim), fontSize = 12.5.sp)
+                CommonText(name = "Create one",
+                    color = colorResource(R.color.cyan),
+                    fontSize = 12.5.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.clickable{
+                        navController.navigate(Cons.REGISTER){
+                            popUpTo(0){
+                                inclusive = true
+                            }
                         }
-                    }
-                }) {
-                    CommonText(name = "Create one", color = colorResource(R.color.cyan), fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold)
-                }
+                    })
             }
         }
     }

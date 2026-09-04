@@ -37,11 +37,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.orbit.R
 import kotlinx.coroutines.launch
 import kotlin.collections.plusAssign
 import kotlin.math.PI
@@ -170,40 +172,38 @@ fun GravityNebula() {
         }
 
         // ── HUD ──────────────────────────────────────────────────────────────
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .padding(top = 60.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text          = "GRAVITY  NEBULA",
-                color         = Color(0xFF00E5FF),
-                fontSize      = 20.sp,
-                fontWeight    = FontWeight.Black,
-                fontFamily    = FontFamily.Monospace,
-                letterSpacing = 5.sp
-            )
-            Spacer(Modifier.height(5.dp))
-            Text(
-                text          = "${particles.size} physics bodies  ·  Jetpack Compose",
-                color         = Color(0xFF3D4E72),
-                fontSize      = 10.sp,
-                fontFamily    = FontFamily.Monospace,
-                letterSpacing = 1.sp
-            )
-        }
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.TopCenter)
+//                .padding(top = 60.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Text(
+//                text          = "GRAVITY  NEBULA",
+//                color         = Color(0xFF00E5FF),
+//                fontSize      = 20.sp,
+//                fontWeight    = FontWeight.Black,
+//                fontFamily    = FontFamily.Monospace,
+//                letterSpacing = 5.sp
+//            )
+//            Spacer(Modifier.height(5.dp))
+//            Text(
+//                text          = "${particles.size} physics bodies  ·  Jetpack Compose",
+//                color         = Color(0xFF3D4E72),
+//                fontSize      = 10.sp,
+//                fontFamily    = FontFamily.Monospace,
+//                letterSpacing = 1.sp
+//            )
+//        }
 
         Text(
-            text          = "tap to detonate  ·  drag to distort  ·  release to restore",
+            text          = "Tap to detonate  ·  Drag to distort  ·  Release to restore",
             modifier      = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 52.dp, start = 24.dp, end = 24.dp),
-            color         = Color(0xFF2E3B58),
-            fontSize      = 10.sp,
-            fontFamily    = FontFamily.Monospace,
-            letterSpacing = .8f.sp,
+            color         = colorResource(R.color.dim),
+            fontSize      = 11.sp,
             textAlign     = TextAlign.Center
         )
     }

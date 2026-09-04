@@ -265,7 +265,11 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     ): NetworkResult<LoginVerifyResponse> {
 
         return try {
-            val response = apiAuth.deleteAccount(email)
+            val map: Map<String, String> = mapOf(
+                "email" to email
+            )
+            Log.d("sssdfsfssd","${map}")
+            val response = apiAuth.deleteAccount(map)
             if (!response.isSuccessful || response.body() == null) {
                 NetworkResult.Error("Account deletion failed")
             } else {

@@ -15,6 +15,7 @@ import com.orbit.prelogin.auth.register.model.RegisterVerifyRequest
 
 import retrofit2.Response
 import retrofit2.http.*
+import java.util.Hashtable
 
 interface RetrofitApi {
 
@@ -61,10 +62,10 @@ interface RetrofitApi {
         @Body request: LoginVerifyRequest
     ): Response<LoginVerifyResponse>
 
-    @DELETE("passkey/account")
+    @HTTP(method = "DELETE", path = "passkey/account", hasBody = true)
     suspend fun deleteAccount(
-        @Query("email") email: String
-    ) : Response<LoginVerifyResponse>
+        @Body body: Map<String, String>
+    ): Response<LoginVerifyResponse>
 
 }
 

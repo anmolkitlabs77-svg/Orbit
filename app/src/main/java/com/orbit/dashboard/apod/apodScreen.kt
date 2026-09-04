@@ -144,7 +144,7 @@ fun Apod(navController: NavHostController) {
 
 
             CommonText(
-                "ABOUT THIS IMAGE",
+                "About This Image",
                 color = colorResource(R.color.text_blue),
                 fontSize = 16.sp,
                 modifier = Modifier.padding(10.dp)
@@ -173,7 +173,7 @@ fun Apod(navController: NavHostController) {
             }
 
             CommonText(
-                "COPYRIGHT",
+                "Copyright",
                 color = colorResource(R.color.text_blue),
                 fontSize = 16.sp,
                 modifier = Modifier.padding(start = 10.dp, top = 10.dp))
@@ -200,7 +200,7 @@ fun Apod(navController: NavHostController) {
 
             if (selectedIndex.value >= 0) {
                 Text(
-                    "RECENT IMAGES",
+                    "Recent Images",
                     color = colorResource(R.color.text_blue),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(10.dp)

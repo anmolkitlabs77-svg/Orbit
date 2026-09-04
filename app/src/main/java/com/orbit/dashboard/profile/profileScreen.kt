@@ -60,6 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.orbit.R
 import com.orbit.dashboard.base.App
+import com.orbit.dashboard.profile.viewModel.profileVM
 import com.orbit.other.BlurEffect
 import com.orbit.other.CommonText
 import com.orbit.other.Cons
@@ -114,13 +115,13 @@ fun Profile(navController: NavHostController) {
             ).show()
 
 
-            if (message == "Account Successfully delected") {
+            if (message == "Account Deleted Successfully") {
 
                 App.sharedPref.clearAll()
                 App.sharedPref.putBoolean(Cons.IS_ONBOARDING_COMPLETE, true)
 
 
-                navController.navigate(Cons.MAINSCREEN) {
+                navController.navigate(Cons.LOGIN) {
                     popUpTo(0) {
                         inclusive = true
                     }
@@ -333,6 +334,9 @@ fun Profile(navController: NavHostController) {
                                             dialogYes = "Ok"
 
                                             return@clickable
+                                        }
+                                        else {
+
                                         }
                                         edit = false
                                         App.sharedPref.putString(Cons.SPACE_TOKEN,text)

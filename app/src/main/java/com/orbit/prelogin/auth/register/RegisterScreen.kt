@@ -3,6 +3,7 @@ package com.orbitwatch.ui.auth
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
@@ -184,24 +185,25 @@ fun RegisterScreen(navController: NavHostController) {
                 enabled = name.isNotBlank() && email.isNotBlank()
             )
 
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(20.dp))
 
             policyLink(navController)
-
 
             Spacer(Modifier.height(20.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                CommonText("Already have an account?", color = colorResource(R.color.text_color2), fontSize = 12.5.sp)
-                TextButton(onClick = {
-                    navController.navigate(Cons.LOGIN){
-                        popUpTo(0){
-                            inclusive = true
+                CommonText("Already have an account? ", color = colorResource(R.color.text_color2), fontSize = 12.5.sp)
+                CommonText("Sign in",
+                    color = colorResource(R.color.cyan),
+                    fontSize = 12.5.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.clickable{
+                        navController.navigate(Cons.LOGIN){
+                            popUpTo(0){
+                                inclusive = true
+                            }
                         }
-                    }
-                }) {
-                    CommonText("Sign in", color = colorResource(R.color.cyan), fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold)
-                }
+                })
             }
         }
     }
@@ -211,7 +213,7 @@ fun RegisterScreen(navController: NavHostController) {
 private fun policyLink(navController: NavHostController) {
     val annotatedText = buildAnnotatedString {
 
-        append("By continuing you agree to Orbit's ")
+        append("By continuing you agree to Orbit's  ")
 
         pushStringAnnotation(
             tag = "PRIVACY",
@@ -227,7 +229,7 @@ private fun policyLink(navController: NavHostController) {
         }
         pop()
 
-        append(" and ")
+        append("  and  ")
 
         pushStringAnnotation(
             tag = "TERMS",

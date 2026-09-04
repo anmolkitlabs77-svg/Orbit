@@ -262,29 +262,29 @@ fun SolarEclipse() {
             else                     -> "FULL DAYLIGHT"
         }
 
-        Column(
-            modifier             = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .padding(top = 56.dp),
-            horizontalAlignment  = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text          = "SOLAR  ECLIPSE",
-                color         = Color(0xFFFFCC44),
-                fontSize      = 20.sp,
-                fontWeight    = FontWeight.Black,
-                fontFamily    = FontFamily.Monospace,
-                letterSpacing = 5.sp,
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text          = "$phaseLabel  ·  ${(coverageForHud * 100).roundToInt()}% SHADOWED",
-                color         = Color(0xFF9AA6BC),
-                fontSize      = 10.sp,
-                fontFamily    = FontFamily.Monospace,
-                letterSpacing = 1.sp,
-            )
-        }
+//        Column(
+//            modifier             = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.TopCenter)
+//                .padding(top = 56.dp),
+//            horizontalAlignment  = Alignment.CenterHorizontally,
+//        ) {
+//            Text(
+//                text          = "SOLAR  ECLIPSE",
+//                color         = Color(0xFFFFCC44),
+//                fontSize      = 20.sp,
+//                fontWeight    = FontWeight.Black,
+//                fontFamily    = FontFamily.Monospace,
+//                letterSpacing = 5.sp,
+//            )
+//            Spacer(Modifier.height(4.dp))
+//            Text(
+//                text          = "$phaseLabel  ·  ${(coverageForHud * 100).roundToInt()}% SHADOWED",
+//                color         = Color(0xFF9AA6BC),
+//                fontSize      = 10.sp,
+//                fontFamily    = FontFamily.Monospace,
+//                letterSpacing = 1.sp,
+//            )
+//        }
     }
 }

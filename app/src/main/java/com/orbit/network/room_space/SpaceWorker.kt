@@ -73,7 +73,7 @@ private fun createNotification(context: Context): ForegroundInfo {
     }
 
     val notification = NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.ic_wifi_off)
+        .setSmallIcon(R.drawable.logo)
         .setContentTitle("Syncing Space Data")
         .setContentText("Please wait...")
         .setAutoCancel(false)

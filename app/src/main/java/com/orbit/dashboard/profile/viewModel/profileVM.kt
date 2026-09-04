@@ -1,4 +1,4 @@
-package com.orbit.dashboard.profile
+package com.orbit.dashboard.profile.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.orbit.network.NetworkResult
 import com.orbit.network.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class profileVM @Inject constructor(val repository: Repository) : ViewModel() {
@@ -33,7 +33,7 @@ class profileVM @Inject constructor(val repository: Repository) : ViewModel() {
         }
         if (result is NetworkResult.Success) {
             _displayLoader.value = false
-            _deleteEvent.emit(result.data?.message ?: "Account Successfully delected")
+            _deleteEvent.emit(result.data?.message ?: "Account Deleted Successfully")
         }
     }
 }
