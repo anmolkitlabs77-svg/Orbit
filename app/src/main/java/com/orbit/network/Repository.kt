@@ -1,7 +1,9 @@
 package com.orbit.network
 
 import android.app.Activity
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresExtension
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CreatePublicKeyCredentialResponse
 import androidx.credentials.CredentialManager
@@ -23,6 +25,7 @@ import com.orbit.network.room_space.entity.NeosEntity
 import com.orbit.network.room_space.entity.WeatherEntity
 import com.orbit.other.Cons
 import com.orbit.other.SharedPref
+import retrofit2.HttpException
 import com.orbit.other.helper.formatKilometers
 import com.orbit.other.helper.formatMeters
 import com.orbit.other.helper.toFormattedVelocity
@@ -38,9 +41,16 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     val apiSpace2: RetrofitApi = RetrofitClient.getSpaceRetrofit2().create(RetrofitApi::class.java)
     val apiAuth: RetrofitApi = RetrofitClient.getAuth().create(RetrofitApi::class.java)
     val spaceToken = App.sharedPref.getString(Cons.SPACE_TOKEN, Cons.spaceToken)
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     suspend fun syncSpaceData(start_date: String, end_date: String) {
 
         val response = apiSpace.getPicByDay(spaceToken, start_date, end_date)
+
+        if (!response.isSuccessful) {
+            throw HttpException(response)
+            return
+        }
+
         if (response.body() != null && response.body()?.size != 0) {
             response.body()?.forEach {
                 spaceDao.insert(
@@ -61,6 +71,10 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
 
         val response = apiSpace.getNeoByDay(spaceToken, today)
 
+        if (!response.isSuccessful) {
+            throw HttpException(response)
+            return
+        }
         if (response.isSuccessful && response.body() != null) {
 
             response.body()?.near_earth_objects?.forEach { (date, list) ->
@@ -101,6 +115,11 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
     suspend fun Events(days: String) {
         val response = apiSpace2.getEvents(days)
 
+        if (!response.isSuccessful) {
+            throw HttpException(response)
+            return
+        }
+
         if (response.isSuccessful && response.body() != null) {
             response.body()?.events?.forEach {
 
@@ -117,6 +136,11 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
 
     suspend fun weather() {
         val response = apiSpace.getWeather(spaceToken)
+
+        if (!response.isSuccessful) {
+            throw HttpException(response)
+            return
+        }
 
         if (response.isSuccessful && response.body() != null) {
 
@@ -213,8 +237,7 @@ class Repository @Inject constructor(val spaceDao: ApodDao,
 
         try {
 
-            val credentialManager =
-                CredentialManager.create(activity)
+            val credentialManager = CredentialManager.create(activity)
 
             val requestJson = Gson().toJson(response.data?.body()?.publicKey)
 

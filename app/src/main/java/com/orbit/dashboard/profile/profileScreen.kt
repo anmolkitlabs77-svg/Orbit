@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -59,6 +60,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.orbit.R
+import com.orbit.dashboard.apod.viewModel.picbyDayVM
 import com.orbit.dashboard.base.App
 import com.orbit.dashboard.profile.viewModel.profileVM
 import com.orbit.other.BlurEffect
@@ -73,9 +75,12 @@ import com.orbit.other.fieldText
 @Composable
 fun Profile(navController: NavHostController) {
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val activity = LocalActivity.current
 
     val viewModel : profileVM = hiltViewModel()
+    val apiModel : picbyDayVM = hiltViewModel()
     val loader = viewModel.displayLoader.observeAsState()
 
     val context = LocalContext.current
@@ -266,7 +271,7 @@ fun Profile(navController: NavHostController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp)
+                    .padding(bottom = 10.dp)
                     .clip(RoundedCornerShape(14.dp))
                     .border(
                         1.dp,
@@ -335,11 +340,14 @@ fun Profile(navController: NavHostController) {
 
                                             return@clickable
                                         }
-                                        else {
+                                        else if((App.sharedPref.getString(Cons.SPACE_TOKEN,"") != text)) {
+                                            apiModel.callWorker()
+                                            Toast.makeText(context,"Mission Control: API Key Updated Successfully!", Toast.LENGTH_SHORT).show()
 
+                                            App.sharedPref.putString(Cons.SPACE_TOKEN,text)
                                         }
+                                        keyboardController?.hide()
                                         edit = false
-                                        App.sharedPref.putString(Cons.SPACE_TOKEN,text)
                                     },
                                     painter = painterResource(R.drawable.ic_save),
                                     contentDescription = "edit",

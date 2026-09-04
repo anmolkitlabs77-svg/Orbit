@@ -37,7 +37,7 @@ class picbyDayVM @Inject constructor(
         callWorker()
     }
 
-    private fun callWorker(){
+     fun callWorker(){
 
         val request = OneTimeWorkRequestBuilder<SpaceWorker>()
             .setInputData(data)

@@ -20,6 +20,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -58,6 +59,8 @@ private fun registerGradientTitle() = buildAnnotatedString {
 fun RegisterScreen(navController: NavHostController) {
 
     val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+
 
     val activity = LocalActivity.current
     val viewModel : registerVM = hiltViewModel()
@@ -172,6 +175,8 @@ fun RegisterScreen(navController: NavHostController) {
                 onClick = {
                     activity?.let {
                         if(email.matches(emailRegex)) {
+                            keyboardController?.hide()
+
                             viewModel.register(
                                 it,
                             )

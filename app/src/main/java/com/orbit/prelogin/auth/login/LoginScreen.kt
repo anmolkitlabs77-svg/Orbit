@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -56,6 +57,8 @@ private fun loginGradientTitle() = buildAnnotatedString {
 fun LoginScreen(navController: NavHostController) {
 
     val activity = LocalActivity.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
 
     val scrollState = rememberScrollState()
     val viewModel : loginVM = hiltViewModel()
@@ -161,6 +164,7 @@ fun LoginScreen(navController: NavHostController) {
                 text = "Sign In",
                 onClick = {
 
+                    keyboardController?.hide()
                     if(email.matches(emailRegex)) {
                         activity?.let {
                             viewModel.login(
